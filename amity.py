@@ -5,7 +5,7 @@ RoomLoc
 This provides guidance on how to handle room allocations for office and living
 spaces in Amity
 Usage:
-    room_loc create_rooms (living|office) <room_name>...
+    room_loc reate_rooms (living|office) <room_name>...
     room_loc (-i | --interactive)
     room_loc (-h | --help | --version)
 Options:
@@ -17,6 +17,7 @@ Options:
 import sys
 import cmd
 from docopt import docopt, DocoptExit
+from rooms import Rooms
 
 def pass_opt(func):
     """
@@ -57,7 +58,7 @@ class Amity (cmd.Cmd):
     @pass_opt
     def do_create_rooms(self, args):
         """Usage: create_rooms (living|office) <room_name>..."""
-        create_rooms(args)
+        print(Rooms().create_rooms(args))
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
