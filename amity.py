@@ -6,6 +6,7 @@ This provides guidance on how to handle room allocations for office and living
 spaces in Amity
 Usage:
     room_loc reate_rooms (living|office) <room_name>...
+    room_loc add_person <first_name> <last_name> (fellow|staff) [y|n]
     room_loc (-i | --interactive)
     room_loc (-h | --help | --version)
 Options:
@@ -18,6 +19,7 @@ import sys
 import cmd
 from docopt import docopt, DocoptExit
 from rooms import Rooms
+from people import Fellow
 
 def pass_opt(func):
     """
@@ -58,7 +60,16 @@ class Amity (cmd.Cmd):
     @pass_opt
     def do_create_rooms(self, args):
         """Usage: create_rooms (living|office) <room_name>..."""
-        print(Rooms().create_rooms(args))
+        Rooms().create_rooms(args)
+
+    @pass_opt
+    def do_add_person(self, args):
+        """Usage: add_person <first_name> <last_name> (fellow|staff) [--wants_accomodation=n]"""
+
+        if args['fellow']:
+            Fellow(args)
+        else:
+            print('staff')
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""

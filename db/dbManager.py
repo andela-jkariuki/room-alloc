@@ -19,6 +19,12 @@ class DBManager:
                     name  INTEGER UNIQUE,
                     type  CHAR(1)
                 );
+                CREATE TABLE IF NOT EXISTS fellows (
+                    id    INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name  TEXT,
+                    accomodation  TEXT,
+                    room_id   INTEGER
+                );
                 """)
 
     def run_many_queries(self, query_string, data):
