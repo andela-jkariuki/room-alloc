@@ -37,3 +37,14 @@ class DBManager:
                 return True
         except lite.IntegrityError:
             return False
+
+    def run_single_query(self, query_string):
+        """
+        Run sqlite execute command to query a single statement
+        """
+        try:
+            with self.connection:
+                self.cursor.execute(query_string)
+                return self.cursor.lastrowid
+        except lite.IntegrityError:
+            return False

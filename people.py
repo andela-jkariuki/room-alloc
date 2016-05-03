@@ -1,5 +1,4 @@
 from db.dbManager import DBManager
-import sqlite3 as lite
 
 class Person:
     def __init__(self, first_name, last_name):
@@ -15,11 +14,20 @@ class Fellow(Person):
 
     def add_fellow(self):
         new_fellow_query = "INSERT INTO fellows(name, accomodation) VALUES('{name}', '{accomodation}')".format(name = self.person.name, accomodation =  self.accomodation)
-        print(new_fellow_query)
-        try:
-            with self.db.connection
-                new_fellow = self.db.cursor.execute(new_fellow_query)
-                print("New fellow succesfully added to the system")
-        except lite.IntegrityError:
+
+        fellow_id = self.db.run_single_query(new_fellow_query)
+
+        if fellow_id :
+            print("New fellow succesfully added. Fellow ID is %d" % (fellow_id))
+            if self.accomodation == 'Y':
+                print('Searching for accomodation for the fellow...')
+                self.accomodate_fellow(fellow_id)
+            else:
+                print('accomodation not provided for fellow.')
+        else:
             print("Error adding new fellow. Please try again")
+
+    def accomodate_fellow(self, fellow_id):
+        print('we be up in here accomodating the fellow')
+
 
