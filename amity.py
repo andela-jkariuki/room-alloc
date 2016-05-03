@@ -12,14 +12,13 @@ Usage:
 Options:
     -i, --interactive  Interactive Mode
     -h, --help  Show this screen and exit.
-    --baud=<n>  Baudrate [default: 9600]
 """
 
 import sys
 import cmd
 from docopt import docopt, DocoptExit
 from rooms import Rooms
-from people import Fellow
+from people import Staff, Fellow
 
 def pass_opt(func):
     """
@@ -64,12 +63,12 @@ class Amity (cmd.Cmd):
 
     @pass_opt
     def do_add_person(self, args):
-        """Usage: add_person <first_name> <last_name> (fellow|staff) [--wants_accomodation=n]"""
+        """Usage: add_person <first_name> <last_name> (fellow|staff) [--a=n]"""
 
         if args['fellow']:
             Fellow(args)
         else:
-            print('staff')
+            Staff(args)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""

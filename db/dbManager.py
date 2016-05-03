@@ -25,6 +25,11 @@ class DBManager:
                     accomodation  TEXT,
                     room_id   INTEGER
                 );
+                CREATE TABLE IF NOT EXISTS staff (
+                    id    INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name  TEXT,
+                    room_id   INTEGER
+                );
                 """)
 
     def run_many_queries(self, query_string, data):
@@ -38,13 +43,47 @@ class DBManager:
         except lite.IntegrityError:
             return False
 
-    def run_single_query(self, query_string):
-        """
-        Run sqlite execute command to query a single statement
+    def insert(self, query_string):
+        """Run sqlite execute to query to insert a single record
+
+        Args:
+            query_string    The sql statement to run
+
+        Returns: last inserted id or false in case of error
         """
         try:
             with self.connection:
                 self.cursor.execute(query_string)
                 return self.cursor.lastrowid
         except lite.IntegrityError:
+            return False
+
+    def update(self, query_string):
+        """Run sqlite execute to query to update a record
+
+        Args:
+            query_string    The sql statement to run
+
+        Returns:    True or False
+        """
+        try:
+            with self.connection:
+                self.cursor.execute(query_string)
+                return True
+        except lite.IntegrityError:
+            return False
+
+    def select(self, query_string):
+        """Run sqlite execute to select data
+
+        Args:
+            query_string    The sql statement to run
+
+        Returns: returned data or false in case of error
+        """
+        try:
+            with self.connection:
+                self.cursor.execute(query_string)
+                return self.cursor.fetchall()
+        except:
             return False
