@@ -30,9 +30,33 @@ class Staff(Person):
         else:
             print("Error adding new staff. Please try again")
 
-    def reallocate(self):
+    def reallocate(self, args):
         """Reallocate a staff member to a new office space"""
 
+        staff_id = int(args['<person_identifier>'])
+        staff = self.db.select_one("SELECT * FROM staff WHERE id = %d"% (staff_id))
+
+        if staff:
+            old_room = self.db.select_one("SELECT * FROM rooms WHERE id = %d AND type='O'" % (staff[-1]))
+            new_room_name = args['<new_room_name>']
+
+            if old_room[1] != new_room_name:
+                office = OfficeSpace()
+                new_room = office.office_space(new_room_name)
+
+                if new_room:
+                    room_occupancy = office.office_space_occupancy(new_room[0])
+                    if len(room_occupancy) < office.room_space:
+                        if office.allocate_room(staff_id, new_room[0]):
+                            print("%s is now residing in %s" % (staff[1], new_room_name))
+                    else:
+                        print("%s is already fully occupied. Please try another room" % (new_room_name))
+                else:
+                    print("No office space by that name. Please try again")
+            else:
+                print("%s already belongs in %s" % (staff[1], new_room_name))
+        else:
+            print("No staff by the provided staff id '%d'" % staff_id)
 
 
 class Fellow(Person):
@@ -44,8 +68,6 @@ class Fellow(Person):
 
         self.person = Person(args['<first_name>'], args['<last_name>'])
         self.accomodation  = 'Y' if args['--a'].lower() == 'y' else 'N'
-
-        """add a new fellow to the system"""
         new_fellow_query = "INSERT INTO fellows(name, accomodation) VALUES('{name}', '{accomodation}')".format(name = self.person.name, accomodation =  self.accomodation)
 
         fellow_id = self.db.insert(new_fellow_query)
@@ -78,24 +100,24 @@ class Fellow(Person):
         fellow_id = int(args['<person_identifier>'])
         fellow = self.db.select_one("SELECT * FROM fellows WHERE id = %d"% (fellow_id))
         if fellow:
-            old_room = self.db.select_one("SELECT * FROM rooms WHERE id = %d" % (fellow[-1]))
+            old_room = self.db.select_one("SELECT * FROM rooms WHERE id = %d AND type='L'" % (fellow[-1]))
             new_room_name = args['<new_room_name>']
             if old_room[1] != new_room_name:
                 living = LivingSpace()
                 new_room = living.living_space(new_room_name)
                 if new_room:
                     room_occupancy = living.living_space_occupancy(new_room[0])
-                    if len(room_occupancy) < 4:
+                    if len(room_occupancy) < living.room_space:
                         if living.allocate_room(fellow_id, new_room[0]):
                             print("%s is now residing in %s" % (fellow[1], new_room_name))
                     else:
                         print("%s is already fully occupied. Please try another room" % (new_room_name))
                 else:
-                    print("No room by that name. Please try again")
+                    print("No living space by that name. Please try again")
             else:
                 print("%s already belongs in %s" % (fellow[1], new_room_name))
         else:
-            print("No Fellow by that time")
+            print("No fellow by the provided fellow id '%d'" % fellow_id)
 
 
 

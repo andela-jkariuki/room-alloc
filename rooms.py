@@ -23,23 +23,65 @@ class Rooms:
 class OfficeSpace(Rooms):
     room_space = 6
 
+    def __init__(self):
+       self.db = DBManager('room_alloc.db')
+
     def office_spaces(self):
         """
         Return a list of office spaces with a vacancy
         """
-        db = DBManager('room_alloc.db')
-        office_space = db.select("SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O' GROUP BY rooms.id")
+
+        office_space = self.db.select("SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O' GROUP BY rooms.id")
         return office_space
 
+    def office_space(self, office_id):
+        """
+        Get the details of an office space
+
+        Args:
+            office_id     The unique Id for the room
+        Returns:
+            list        The office_id, name and room_type
+        """
+        if isinstance(office_id, str):
+            query = "SELECT * FROM rooms WHERE name = '%s' AND type='O'" % (office_id)
+        elif isinstance(office_id, int):
+            query = "SELECT * FROM rooms where id = %d AND type='O'" % (office_id)
+        office = self.db.select_one(query)
+        if office:
+            return office
+        return False
+
+    def allocate_room(self, staff_id, room_id):
+        update_room = "UPDATE staff SET room_id = %d WHERE id = %d" % (room_id, staff_id)
+
+        if self.db.update(update_room):
+            return True
+        return False
+
+    def office_space_occupancy(self, office_id):
+        """
+        Get the details of an office space
+
+        Args:
+            office_id     The unique Id for the room
+        Returns:
+            list
+        """
+        room = self.office_space(office_id)
+        if room:
+            return self.db.select( "SELECT * FROM staff WHERE room_id = %d" % (room[0]))
+        return False
+
 class LivingSpace(Rooms):
+
     room_space = 4
+
     def __init__(self):
        self.db = DBManager('room_alloc.db')
 
     def living_spaces(self):
-        """
-        View a list of rooms with at least one vacancy
-        """
+        """View a list of rooms with at least one vacancy"""
 
         living_spaces = self.db.select("SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN fellows ON rooms.id = fellows.room_id WHERE rooms.type='L' GROUP BY rooms.id")
         return living_spaces
@@ -53,12 +95,10 @@ class LivingSpace(Rooms):
         Returns:
             list        The room_id, name and room_type
         """
-        # rooms_occupancy = "SELECT * FROM rooms WHERE room_id = %d" % (room_id)
-        # rooms_occupancy = self.db.select(rooms_occupancy)
         if isinstance(room_id, str):
-            query = "SELECT * FROM rooms WHERE name = '%s'" % (room_id)
+            query = "SELECT * FROM rooms WHERE name = '%s' AND type='L'" % (room_id)
         elif isinstance(room_id, int):
-            query = 'SELECT * FROM rooms where id = %d' % (room_id)
+            query = "SELECT * FROM rooms where id = %d AND type='L'" % (room_id)
         room = self.db.select_one(query)
         if room:
             return room
