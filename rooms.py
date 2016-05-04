@@ -173,7 +173,7 @@ class LivingSpace(Rooms):
         return False
 
     def allocate_room(self, fellow_id, room_id):
-        update_room = "UPDATE fellows SET room_id = %d WHERE id = %d" % (room_id, fellow_id)
+        update_room = "UPDATE fellows SET room_id = %d, accomodation = 'Y' WHERE id = %d" % (room_id, fellow_id)
 
         if self.db.update(update_room):
             return True

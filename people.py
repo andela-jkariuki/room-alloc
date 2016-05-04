@@ -67,7 +67,7 @@ class Fellow(Person):
         """Add a new fellow to the system"""
 
         self.person = Person(args['<first_name>'], args['<last_name>'])
-        self.accomodation  = 'Y' if args['--a'].lower() == 'y' else 'N'
+        self.accomodation  = 'Y' if args['--a'] is not None and args['--a'].lower() == 'y' else 'N'
         new_fellow_query = "INSERT INTO fellows(name, accomodation) VALUES('{name}', '{accomodation}')".format(name = self.person.name, accomodation =  self.accomodation)
 
         fellow_id = self.db.insert(new_fellow_query)
@@ -86,7 +86,7 @@ class Fellow(Person):
         """Accomodate a new fellow in the living spaces"""
 
         vacant_living_spaces = LivingSpace().living_spaces()
-        print(OfficeSpace.room_space)
+
         living_space = random.choice([i for i in vacant_living_spaces if i[-1] < LivingSpace.room_space])
         query = "UPDATE fellows SET room_id = %d WHERE id = %d" % (living_space[0], fellow_id)
         if self.db.update(query):
@@ -100,24 +100,48 @@ class Fellow(Person):
         fellow_id = int(args['<person_identifier>'])
         fellow = self.db.select_one("SELECT * FROM fellows WHERE id = %d"% (fellow_id))
         if fellow:
-            old_room = self.db.select_one("SELECT * FROM rooms WHERE id = %d AND type='L'" % (fellow[-1]))
-            new_room_name = args['<new_room_name>']
-            if old_room[1] != new_room_name:
-                living = LivingSpace()
-                new_room = living.living_space(new_room_name)
-                if new_room:
-                    room_occupancy = living.living_space_occupancy(new_room[0])
-                    if len(room_occupancy) < living.room_space:
-                        if living.allocate_room(fellow_id, new_room[0]):
-                            print("%s is now residing in %s" % (fellow[1], new_room_name))
-                    else:
-                        print("%s is already fully occupied. Please try another room" % (new_room_name))
+            if fellow[2] == 'N':
+                accommodate = raw_input("%s has opted out of amity accomodation.Would you like to proceed and accomodate the fellow? [y/n]" % (fellow[1]))
+                if accommodate.upper() == 'Y':
+                    self.allocate_new_fellow(fellow, fellow_id, args)
                 else:
-                    print("No living space by that name. Please try again")
+                    print("%s has not been allocated into any room." % format(fellow[1]))
             else:
-                print("%s already belongs in %s" % (fellow[1], new_room_name))
+                self.reallocate_fellow(fellow, fellow_id, args)
         else:
             print("No fellow by the provided fellow id '%d'" % fellow_id)
+
+    def reallocate_fellow(self, fellow, fellow_id, args):
+        old_room = self.db.select_one("SELECT * FROM rooms WHERE id = %d AND type='L'" % (fellow[-1]))
+        new_room_name = args['<new_room_name>']
+        if old_room[1] != new_room_name:
+            living = LivingSpace()
+            new_room = living.living_space(new_room_name)
+            if new_room:
+                room_occupancy = living.living_space_occupancy(new_room[0])
+                if len(room_occupancy) < living.room_space:
+                    if living.allocate_room(fellow_id, new_room[0]):
+                        print("%s is now residing in %s" % (fellow[1], new_room_name))
+                else:
+                    print("%s is already fully occupied. Please try another room" % (new_room_name))
+            else:
+                print("No living space by that name. Please try again")
+        else:
+            print("%s already belongs in %s" % (fellow[1], new_room_name))
+
+    def allocate_new_fellow(self, fellow, fellow_id, args):
+        new_room_name = args['<new_room_name>']
+        living = LivingSpace()
+        new_room = living.living_space(new_room_name)
+        if new_room:
+            room_occupancy = living.living_space_occupancy(new_room[0])
+            if len(room_occupancy) < living.room_space:
+                if living.allocate_room(fellow_id, new_room[0]):
+                    print("%s is now residing in %s" % (fellow[1], new_room_name))
+            else:
+                print("%s is already fully occupied. Please try another room" % (new_room_name))
+        else:
+            print("No living space by that name. Please try again")
 
 
 
