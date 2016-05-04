@@ -1,5 +1,6 @@
 from pprint import pprint as pp
 from db.dbManager import DBManager
+from itertools import groupby
 
 class Rooms:
     def create_rooms(self, args):
@@ -19,6 +20,59 @@ class Rooms:
             print 'New rooms succesfully created'
         else:
             return 'Duplicate entries: A room already exist with provided name'
+
+    def room_allocations(self, args):
+        """Print out a list of all room allocations"""
+        office_spaces = self.db.select("SELECT rooms.id, rooms.name, rooms.type, staff.name FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O'")
+
+        living_spaces = self.db.select("SELECT rooms.id, rooms.name, rooms.type, fellows.name FROM rooms LEFT JOIN fellows ON rooms.id = fellows.room_id WHERE rooms.type='L'")
+
+        office_space_allocations = {}
+        living_space_allocations = {}
+
+        for key, group in groupby(office_spaces, lambda x: x[0]):
+            staff_occupancy = list(group)
+            room_name = str(staff_occupancy[0][1])
+            office_space_allocations[room_name] = []
+            for staff in staff_occupancy:
+                office_space_allocations[room_name].append(staff[-1])
+
+        for key, group in groupby(living_spaces, lambda x: x[0]):
+            staff_occupancy = list(group)
+            room_name = str(staff_occupancy[0][1])
+            living_space_allocations[room_name] = []
+            for staff in staff_occupancy:
+                living_space_allocations[room_name].append(staff[-1])
+
+        divider = max(max([len(", ".join(i)) for i \
+            in office_space_allocations.values() if i[0] is not None]),
+            max([len(", ".join(i)) for i \
+            in living_space_allocations.values() if i[0] is not None]))
+
+        print '\n', '*' * divider, "\nOFFICE SPACES\n", '*' * divider, "\n"
+        if len(office_space_allocations) != 0:
+            for name, occupants in office_space_allocations.iteritems():
+                if occupants[0] is not None:
+                    members = ", ".join(occupants)
+                    print name
+                    print '-' * divider
+                    print members
+                    print ""
+        else:
+            print "no office spaces are occupied"
+
+        print '\n', '*' * divider, "\nLIVING SPACES\n", '*' * divider,"\n"
+
+        if len(living_space_allocations) != 0:
+            for name, occupants in living_space_allocations.iteritems():
+                if occupants[0] is not None:
+                    members = ", ".join(occupants)
+                    print name
+                    print '-' * divider
+                    print members
+                    print ""
+        else:
+            print "no living spaces are occupied"
 
 class OfficeSpace(Rooms):
     room_space = 6

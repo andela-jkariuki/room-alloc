@@ -17,8 +17,9 @@ Options:
 import sys
 import cmd
 from docopt import docopt, DocoptExit
-from rooms import Rooms
+from rooms import Rooms, LivingSpace, OfficeSpace
 from people import Staff, Fellow
+from pprint import pprint as pp
 
 def pass_opt(func):
     """
@@ -79,6 +80,12 @@ class Amity (cmd.Cmd):
             Fellow().reallocate(args)
         else:
             Staff().reallocate(args)
+
+    @pass_opt
+    def do_print_allocations(self, args):
+        """Usage: print_allocations [-o=allocations.txt]"""
+        living = LivingSpace()
+        living.room_allocations(args)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
