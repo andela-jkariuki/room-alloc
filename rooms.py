@@ -33,13 +33,57 @@ class OfficeSpace(Rooms):
 
 class LivingSpace(Rooms):
     room_space = 4
+    def __init__(self):
+       self.db = DBManager('room_alloc.db')
 
     def living_spaces(self):
         """
         View a list of rooms with at least one vacancy
         """
-        db = DBManager('room_alloc.db')
-        living_spaces = db.select("SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN fellows ON rooms.id = fellows.room_id WHERE rooms.type='L' GROUP BY rooms.id")
+
+        living_spaces = self.db.select("SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN fellows ON rooms.id = fellows.room_id WHERE rooms.type='L' GROUP BY rooms.id")
         return living_spaces
+
+    def living_space(self, room_id):
+        """
+        Get the details of a living space
+
+        Args:
+            room_id     The unique Id for the room
+        Returns:
+            list        The room_id, name and room_type
+        """
+        # rooms_occupancy = "SELECT * FROM rooms WHERE room_id = %d" % (room_id)
+        # rooms_occupancy = self.db.select(rooms_occupancy)
+        if isinstance(room_id, str):
+            query = "SELECT * FROM rooms WHERE name = '%s'" % (room_id)
+        elif isinstance(room_id, int):
+            query = 'SELECT * FROM rooms where id = %d' % (room_id)
+        room = self.db.select_one(query)
+        if room:
+            return room
+        return False
+
+    def living_space_occupancy(self, room_id):
+        """
+        Get the details of a living space
+
+        Args:
+            room_id     The unique Id for the room
+        Returns:
+            list
+        """
+        room = self.living_space(room_id)
+        if room:
+            return self.db.select( "SELECT * FROM fellows WHERE room_id = %d" % (room[0]))
+        return False
+
+    def allocate_room(self, fellow_id, room_id):
+        update_room = "UPDATE fellows SET room_id = %d WHERE id = %d" % (room_id, fellow_id)
+
+        if self.db.update(update_room):
+            return True
+        return False
+
 
 

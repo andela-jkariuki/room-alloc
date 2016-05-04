@@ -87,3 +87,18 @@ class DBManager:
                 return self.cursor.fetchall()
         except:
             return False
+
+    def select_one(self, query_string):
+        """Run sqlite execute to select one record of data
+
+        Args:
+            query_string    The sql statement to run
+
+        Returns: returned data or false in case of error
+        """
+        try:
+            with self.connection:
+                self.cursor.execute(query_string)
+                return self.cursor.fetchone()
+        except:
+            return False

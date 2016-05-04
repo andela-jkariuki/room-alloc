@@ -5,15 +5,16 @@ from pprint import pprint as pp
 
 class Person:
     def __init__(self, first_name, last_name):
+        self.db = DBManager('room_alloc.db')
         self.name = first_name + ' ' + last_name
 
 class Staff(Person):
     def __init__(self, args):
-        self.person = Person(args['<first_name>'], args['<last_name>'])
         self.db = DBManager('room_alloc.db')
-        self.add_staff()
 
-    def add_staff(self):
+    def add_staff(self, args):
+        self.person = Person(args['<first_name>'], args['<last_name>'])
+
         """add a new staff to the system"""
         office_spaces = OfficeSpace().office_spaces()
         office_space = random.choice([i for i in office_spaces if i[-1] < OfficeSpace.room_space])
@@ -29,14 +30,13 @@ class Staff(Person):
 
 
 class Fellow(Person):
-    def __init__(self, args):
+    def __init__(self):
+        self.db = DBManager('room_alloc.db')
+
+    def add_fellow(self, args):
         self.person = Person(args['<first_name>'], args['<last_name>'])
         self.accomodation  = 'Y' if args['--a'].lower() == 'y' else 'N'
 
-        self.db = DBManager('room_alloc.db')
-        self.add_fellow()
-
-    def add_fellow(self):
         """add a new fellow to the system"""
         new_fellow_query = "INSERT INTO fellows(name, accomodation) VALUES('{name}', '{accomodation}')".format(name = self.person.name, accomodation =  self.accomodation)
 
@@ -55,12 +55,37 @@ class Fellow(Person):
     def accomodate_fellow(self, fellow_id):
         """Accomodate a new fellow"""
         vacant_living_spaces = LivingSpace().living_spaces()
-        living_space = random.choice([i for i in vacant_living_spaces if i[-1] < OfficeSpace.room_space])
+        print(OfficeSpace.room_space)
+        living_space = random.choice([i for i in vacant_living_spaces if i[-1] < LivingSpace.room_space])
         query = "UPDATE fellows SET room_id = %d WHERE id = %d" % (living_space[0], fellow_id)
         if self.db.update(query):
             print("{} is now accommodated in {}".format(self.person.name, living_space[1]))
         else:
             print("Error acomomdating {}".format(self.person.name))
+
+    def rellocate(self, args):
+        """Rellocate a fellow to a new room"""
+        fellow_id = int(args['<person_identifier>'])
+        fellow = self.db.select_one("SELECT * FROM fellows WHERE id = %d"% (fellow_id))
+        if fellow:
+            old_room = self.db.select_one("SELECT * FROM rooms WHERE id = %d" % (fellow[-1]))
+            new_room_name = args['<new_room_name>']
+            if old_room[1] != new_room_name:
+                living = LivingSpace()
+                new_room = living.living_space(new_room_name)
+                if new_room:
+                    room_occupancy = living.living_space_occupancy(new_room[0])
+                    if len(room_occupancy) < 4:
+                        if living.allocate_room(fellow_id, new_room[0]):
+                            print("%s is now residing in %s" % (fellow[1], new_room_name))
+                    else:
+                        print("%s is already fully occupied. Please try another room" % (new_room_name))
+                else:
+                    print("No room by that name. Please try again")
+            else:
+                print("%s already belongs in %s" % (fellow[1], new_room_name))
+        else:
+            print("No Fellow by that time")
 
 
 
