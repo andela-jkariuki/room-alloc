@@ -9,10 +9,12 @@ class Person:
         self.name = first_name + ' ' + last_name
 
 class Staff(Person):
-    def __init__(self, args):
+    def __init__(self):
         self.db = DBManager('room_alloc.db')
 
     def add_staff(self, args):
+        """Add a new staff member to the system"""
+
         self.person = Person(args['<first_name>'], args['<last_name>'])
 
         """add a new staff to the system"""
@@ -28,12 +30,18 @@ class Staff(Person):
         else:
             print("Error adding new staff. Please try again")
 
+    def reallocate(self):
+        """Reallocate a staff member to a new office space"""
+
+
 
 class Fellow(Person):
     def __init__(self):
         self.db = DBManager('room_alloc.db')
 
     def add_fellow(self, args):
+        """Add a new fellow to the system"""
+
         self.person = Person(args['<first_name>'], args['<last_name>'])
         self.accomodation  = 'Y' if args['--a'].lower() == 'y' else 'N'
 
@@ -53,7 +61,8 @@ class Fellow(Person):
             print("Error adding new fellow. Please try again")
 
     def accomodate_fellow(self, fellow_id):
-        """Accomodate a new fellow"""
+        """Accomodate a new fellow in the living spaces"""
+
         vacant_living_spaces = LivingSpace().living_spaces()
         print(OfficeSpace.room_space)
         living_space = random.choice([i for i in vacant_living_spaces if i[-1] < LivingSpace.room_space])
@@ -63,8 +72,9 @@ class Fellow(Person):
         else:
             print("Error acomomdating {}".format(self.person.name))
 
-    def rellocate(self, args):
-        """Rellocate a fellow to a new room"""
+    def reallocate(self, args):
+        """Reallocate an existing fellow to a new room"""
+
         fellow_id = int(args['<person_identifier>'])
         fellow = self.db.select_one("SELECT * FROM fellows WHERE id = %d"% (fellow_id))
         if fellow:

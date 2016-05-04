@@ -76,9 +76,9 @@ class Amity (cmd.Cmd):
     def do_reallocate_person(self, args):
         """Usage: reallocate_person (fellow|staff) <person_identifier> <new_room_name>"""
         if args['fellow']:
-            Fellow().rellocate(args)
+            Fellow().reallocate(args)
         else:
-            Staff().rellocate(args)
+            Staff().reallocate(args)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
