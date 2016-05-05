@@ -52,7 +52,6 @@ class Rooms:
             in living_space_allocations.values() if i[0] is not None]))
 
         output = ''
-
         output += '\n' + '*' * divider + "\nOFFICE SPACES\n" + '*' * divider + "\n\n"
         if len(office_space_allocations) != 0:
             for name, occupants in office_space_allocations.iteritems():

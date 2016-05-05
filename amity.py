@@ -18,7 +18,7 @@ import sys
 import cmd
 from docopt import docopt, DocoptExit
 from rooms import Rooms, LivingSpace, OfficeSpace
-from people import Staff, Fellow
+from people import Person, Staff, Fellow
 from pprint import pprint as pp
 
 def pass_opt(func):
@@ -92,6 +92,12 @@ class Amity (cmd.Cmd):
         """Usage: print_room <room_name> [--o=y]"""
         rooms = Rooms()
         rooms.room_allocation(args)
+
+    @pass_opt
+    def do_print_unallocated(self, args):
+        """Usage: print_unallocated [--o=y]"""
+        person = Person()
+        person.unallocated(args)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""

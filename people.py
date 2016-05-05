@@ -4,9 +4,34 @@ from rooms import Rooms, LivingSpace, OfficeSpace
 from pprint import pprint as pp
 
 class Person:
-    def __init__(self, first_name, last_name):
+    def __init__(self):
         self.db = DBManager('room_alloc.db')
+
+    def set_name(self, first_name, last_name):
         self.name = first_name + ' ' + last_name
+
+    def unallocated(self, args):
+        unallocated_fellows = Fellow().unallocated()
+        unallocated_staff = Staff().unallocated()
+
+        output = ''
+        output += '*' * 30 + "\nSTAFF\n" + '*' * 30 + "\n"
+        if unallocated_staff and len(unallocated_staff) != 0:
+            output += ", ".join([str(i[1]) for i in unallocated_staff])
+        else:
+            output += 'All staff have been assigned'
+
+        output += '\n\n' + '*' * 30 + "\nFELLOWS\n" + '*' * 30 + "\n"
+        if unallocated_fellows and len(unallocated_fellows) != 0:
+            output += "\n".join([str(i[1]) for i in unallocated_fellows])
+        else:
+            output += 'All fellows have been assigned'
+
+        print(output)
+        if args['--o'] is not None:
+            with open('unallocated.txt', 'wt') as f:
+                f.write(output)
+                print "Unallocated people printed out to %s" % ('unallocated.txt')
 
 class Staff(Person):
     def __init__(self):
@@ -15,7 +40,8 @@ class Staff(Person):
     def add_staff(self, args):
         """Add a new staff member to the system"""
 
-        self.person = Person(args['<first_name>'], args['<last_name>'])
+        self.person = Person()
+        self.person.set_name(args['<first_name>'], args['<last_name>'])
 
         """add a new staff to the system"""
         office_spaces = OfficeSpace().office_spaces()
@@ -58,6 +84,14 @@ class Staff(Person):
         else:
             print("No staff by the provided staff id '%d'" % staff_id)
 
+    def unallocated(self):
+        """Return a list of unallocated staff"""
+        unallocated = self.db.select("SELECT * FROM staff WHERE room_id is NULL or room_id = ''")
+
+        if unallocated:
+            return unallocated
+        return False
+
 
 class Fellow(Person):
     def __init__(self):
@@ -66,7 +100,8 @@ class Fellow(Person):
     def add_fellow(self, args):
         """Add a new fellow to the system"""
 
-        self.person = Person(args['<first_name>'], args['<last_name>'])
+        self.person = Person()
+        self.person.set_name(args['<first_name>'], args['<last_name>'])
         self.accomodation  = 'Y' if args['--a'] is not None and args['--a'].lower() == 'y' else 'N'
         new_fellow_query = "INSERT INTO fellows(name, accomodation) VALUES('{name}', '{accomodation}')".format(name = self.person.name, accomodation =  self.accomodation)
 
@@ -142,6 +177,14 @@ class Fellow(Person):
                 print("%s is already fully occupied. Please try another room" % (new_room_name))
         else:
             print("No living space by that name. Please try again")
+
+    def unallocated(self):
+        """Return a list of unallocated fellow"""
+        unallocated = self.db.select("SELECT * FROM  fellows WHERE room_id is NULL or room_id = ''")
+
+        if unallocated:
+            return unallocated
+        return False
 
 
 
