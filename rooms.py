@@ -3,6 +3,9 @@ from db.dbManager import DBManager
 from itertools import groupby
 
 class Rooms:
+    def __init__(self):
+        self.db = DBManager('room_alloc.db')
+
     def create_rooms(self, args):
         """Add new rooms to the rooms table
 
@@ -14,9 +17,7 @@ class Rooms:
         room_type = 'L' if args['living'] else 'O'
         room_list = tuple((room, room_type) for room in args['<room_name>'])
 
-        db = DBManager('room_alloc.db')
-
-        if db.run_many_queries("INSERT INTO rooms(name, type) VALUES (?, ?)", room_list):
+        if self.db.run_many_queries("INSERT INTO rooms(name, type) VALUES (?, ?)", room_list):
             print 'New rooms succesfully created'
         else:
             return 'Duplicate entries: A room already exist with provided name'
@@ -49,30 +50,33 @@ class Rooms:
             max([len(", ".join(i)) for i \
             in living_space_allocations.values() if i[0] is not None]))
 
-        print '\n', '*' * divider, "\nOFFICE SPACES\n", '*' * divider, "\n"
+        output = ''
+
+        output += '\n' + '*' * divider + "\nOFFICE SPACES\n" + '*' * divider + "\n\n"
         if len(office_space_allocations) != 0:
             for name, occupants in office_space_allocations.iteritems():
                 if occupants[0] is not None:
                     members = ", ".join(occupants)
-                    print name
-                    print '-' * divider
-                    print members
-                    print ""
+                    output += name + "\n" + '-' * divider + "\n" + members + "\n\n"
         else:
-            print "no office spaces are occupied"
+            output += "no office spaces are occupied"
 
-        print '\n', '*' * divider, "\nLIVING SPACES\n", '*' * divider,"\n"
+        output += '\n' + '*' * divider + "\nLIVING SPACES\n" + '*' * divider + "\n\n"
 
         if len(living_space_allocations) != 0:
             for name, occupants in living_space_allocations.iteritems():
                 if occupants[0] is not None:
                     members = ", ".join(occupants)
-                    print name
-                    print '-' * divider
-                    print members
-                    print ""
+                    output += name + "\n" + '-' * divider + "\n" + members + "\n\n"
         else:
-            print "no living spaces are occupied"
+            output += "no living spaces are occupied"
+
+        print(output)
+
+        if args['--o'] is not None:
+            with open(args['--o'], 'wt') as f:
+                f.write(output)
+                print "Room allocations printed out to %s" % (args['--o'])
 
 class OfficeSpace(Rooms):
     room_space = 6

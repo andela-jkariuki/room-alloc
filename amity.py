@@ -83,9 +83,9 @@ class Amity (cmd.Cmd):
 
     @pass_opt
     def do_print_allocations(self, args):
-        """Usage: print_allocations [-o=allocations.txt]"""
-        living = LivingSpace()
-        living.room_allocations(args)
+        """Usage: print_allocations [--o=allocations.txt]"""
+        rooms = Rooms()
+        rooms.room_allocations(args)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
