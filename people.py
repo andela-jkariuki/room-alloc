@@ -45,16 +45,21 @@ class Staff(Person):
 
         """add a new staff to the system"""
         office_spaces = OfficeSpace().office_spaces()
-        office_space = random.choice([i for i in office_spaces if i[-1] < OfficeSpace.room_space])
-        new_staff = "INSERT INTO staff(name, room_id) VALUES ('%s', %d)" % (self.person.name, office_space[0])
+        office_spaces = [i for i in office_spaces if i[-1] < OfficeSpace.room_space]
+        if len(office_spaces) != 0:
+            office_space = random.choice(office_spaces)
+            new_staff = "INSERT INTO staff(name, room_id) VALUES ('%s', %d)" % (self.person.name, office_space[0])
 
-        staff_id = self.db.insert(new_staff)
+            staff_id = self.db.insert(new_staff)
 
-        if staff_id:
-            print("New Staff succesfully added. Staff ID is %d" % (staff_id))
-            print('%s office space is in %s.' % (self.person.name, office_space[1]))
+            if staff_id:
+                print("New Staff succesfully added. Staff ID is %d" % (staff_id))
+                print('%s office space is in %s.' % (self.person.name, office_space[1]))
+            else:
+                print("Error adding new staff. Please try again")
         else:
-            print("Error adding new staff. Please try again")
+            print("There are no vacant office spaces. Please check in later")
+
 
     def reallocate(self, args):
         """Reallocate a staff member to a new office space"""
@@ -121,13 +126,16 @@ class Fellow(Person):
         """Accomodate a new fellow in the living spaces"""
 
         vacant_living_spaces = LivingSpace().living_spaces()
-
-        living_space = random.choice([i for i in vacant_living_spaces if i[-1] < LivingSpace.room_space])
-        query = "UPDATE fellows SET room_id = %d WHERE id = %d" % (living_space[0], fellow_id)
-        if self.db.update(query):
-            print("{} is now accommodated in {}".format(self.person.name, living_space[1]))
+        vacant_living_spaces = [i for i in vacant_living_spaces if i[-1] < LivingSpace.room_space]
+        if len(vacant_living_spaces) != 0:
+            living_space = random.choice(vacant_living_spaces)
+            query = "UPDATE fellows SET room_id = %d WHERE id = %d" % (living_space[0], fellow_id)
+            if self.db.update(query):
+                print("{} is now accommodated in {}".format(self.person.name, living_space[1]))
+            else:
+                print("Error acomomdating {}".format(self.person.name))
         else:
-            print("Error acomomdating {}".format(self.person.name))
+            print("There are no vacant living spaces for now. Please check in later")
 
     def reallocate(self, args):
         """Reallocate an existing fellow to a new room"""
