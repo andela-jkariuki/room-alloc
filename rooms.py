@@ -24,6 +24,7 @@ class Rooms:
 
     def room_allocations(self, args):
         """Print out a list of all room allocations"""
+
         office_spaces = self.db.select("SELECT rooms.id, rooms.name, rooms.type, staff.name FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O'")
 
         living_spaces = self.db.select("SELECT rooms.id, rooms.name, rooms.type, fellows.name FROM rooms LEFT JOIN fellows ON rooms.id = fellows.room_id WHERE rooms.type='L'")
@@ -77,6 +78,41 @@ class Rooms:
             with open(args['--o'], 'wt') as f:
                 f.write(output)
                 print "Room allocations printed out to %s" % (args['--o'])
+
+    def room_allocation(self, args):
+        """Print out the rooom allocations for a particular room"""
+        room_name = args['<room_name>']
+        office_space = OfficeSpace();
+        office =  office_space.office_space(room_name)
+        living_space = LivingSpace()
+        living = living_space.living_space(room_name)
+
+        if office:
+            room_type = "OFFICE SPACE"
+            occupants = office_space.office_space_occupancy(office[0])
+        elif living:
+            room_type = "LIVING SPACE"
+            occupants = living_space.living_space_occupancy(living[0])
+        else:
+            print("No room exists in amity with that name. please try again")
+            return
+        occupants = ", ".join([str(i[1]) for i in occupants])
+        divider = len(occupants)
+
+        output = '*' * divider + "\n"
+        output += room_name.upper() + " (" + room_type+ ")\n"
+        output+= '*' * divider + "\n"
+
+        if len(occupants) == 0:
+            output += "%s has no occupants" % (room_name)
+        else:
+            output += occupants
+        print output
+
+        if args['--o'] is not None:
+            with open(room_name + ".txt", 'wt') as f:
+                f.write(output)
+                print "%s occupants printed out to %s" % (room_name, room_name + ".txt")
 
 class OfficeSpace(Rooms):
     room_space = 6
