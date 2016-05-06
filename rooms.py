@@ -1,6 +1,7 @@
 from pprint import pprint as pp
 from db.dbManager import DBManager
 from itertools import groupby
+import tkFileDialog as tk
 
 class Rooms:
     def __init__(self):
@@ -112,6 +113,13 @@ class Rooms:
             with open(room_name + ".txt", 'wt') as f:
                 f.write(output)
                 print "%s occupants printed out to %s" % (room_name, room_name + ".txt")
+
+    def allocate_from_file(self, args):
+        """Allocate rooms to users from a file"""
+        file = tk.askopenfile(mode = 'rt', title ='Load list of people to allocate rooms')
+        with open(file.name, 'r') as f:
+            data = f.readlines()
+            print(data)
 
 class OfficeSpace(Rooms):
     room_space = 6
