@@ -117,9 +117,32 @@ class Rooms:
     def allocate_from_file(self, args):
         """Allocate rooms to users from a file"""
         file = tk.askopenfile(mode = 'rt', title ='Load list of people to allocate rooms')
+
+        fellows = []
+        staff = []
         with open(file.name, 'r') as f:
-            data = f.readlines()
-            print(data)
+            people = f.readlines()
+            for person in people:
+                person = person.split()
+                person_type = 'F' if person[2] == 'FELLOW' else 'S'
+
+                if person_type == 'F':
+                    try:
+                        fellow = {}
+                        fellow['<first_name>'] = person[0]
+                        fellow['<last_name>'] = person[1]
+                        fellow['--a'] = person[3]
+                        fellows.append(fellow)
+                    except:
+                        print("Invalid data file on for %s" % (first_name + last_name))
+
+                else:
+                    staff_member = {}
+                    staff_member['<first_name>'] = person[0]
+                    staff_member['<last_name>'] = person[1]
+                    staff.append(staff_member)
+
+            print(fellows, staff)
 
 class OfficeSpace(Rooms):
     room_space = 6
