@@ -142,7 +142,10 @@ class Rooms:
                     staff_member['<last_name>'] = person[1]
                     staff.append(staff_member)
 
-            print(fellows, staff)
+            staff_count = len(staff)
+            fellow_count = len(fellows)
+            print(staff_count, staff)
+            print(fellow_count, fellows)
 
 class OfficeSpace(Rooms):
     room_space = 6
