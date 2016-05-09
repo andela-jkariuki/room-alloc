@@ -14,9 +14,9 @@ class Rooms:
     def create_rooms(self, args):
         """Add new rooms to the rooms table
 
-        Args:
-            args (dict) Type of room space to add and the list of all the new
-                        rooms to be added.
+        Arguments:
+                args (dict) Type of room space to add and the list of all the new
+                            rooms to be added.
         Returns:
             Boolean     True if the rooms were created.
                         False if the rooms were not created
@@ -34,8 +34,8 @@ class Rooms:
     def room_allocations(self, args):
         """Print out a list of all room allocations
 
-        Args:
-            args (dict) Filename to print out the output (optional)
+        Arguments:
+                args (dict) Filename to print out the output (optional)
         """
         office_spaces = self.db.select("SELECT rooms.id, rooms.name, rooms.type, staff.name FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O'")
 
@@ -92,9 +92,9 @@ class Rooms:
 
     def room_allocation(self, args):
         """Print out the rooom allocations for a particular room
-        Args:
-            args (dict) Room name
-                        File name to print out the room allocation (optional)
+        Arguments:
+                args (dict) Room name
+                            File name to print out the room allocation (optional)
         """
         room_name = args['<room_name>']
         office_space = OfficeSpace();
@@ -137,7 +137,7 @@ class OfficeSpace(Rooms):
 
     def __init__(self):
         """Create instance of the database"""
-       self.db = DBManager('room_alloc.db')
+        self.db = DBManager('room_alloc.db')
 
     def office_spaces(self):
         """Return a list of office spaces with a vacancy"""
@@ -149,11 +149,11 @@ class OfficeSpace(Rooms):
         """
         Get the details of an office space
 
-        Args:
-            office_id  The unique Id for the room
+        Arguments:
+                office_id  The unique Id for the room
 
         Returns:
-            List       The office space record in the database
+                List       The office space record in the database
         """
         if isinstance(office_id, str):
             query = "SELECT * FROM rooms WHERE name = '%s' AND type='O'" % (office_id)
@@ -168,8 +168,8 @@ class OfficeSpace(Rooms):
         """
         Get the details of an office space
 
-        Args:
-            office_id The unique Id for the room
+        Arguments:
+                office_id The unique Id for the room
         Returns:
             list      Records of the staff occupying the office
         """
@@ -181,9 +181,9 @@ class OfficeSpace(Rooms):
     def allocate_room(self, staff_id, room_id):
         """Allocate an office space to a staff member
 
-        Args:
-            staff_id  The unique ID of the staff member
-            room_id   The uniquer ID of the office space to be allocated
+        Arguments:
+                staff_id  The unique ID of the staff member
+                room_id   The uniquer ID of the office space to be allocated
 
         Returns:
             Boolean   True if updated, otherwise False
@@ -202,7 +202,7 @@ class LivingSpace(Rooms):
 
     def __init__(self):
         """Create instance of the database"""
-       self.db = DBManager('room_alloc.db')
+        self.db = DBManager('room_alloc.db')
 
     def living_spaces(self):
         """View a list of rooms with at least one vacancy"""
@@ -214,8 +214,8 @@ class LivingSpace(Rooms):
         """
         Get the details of a living space
 
-        Args:
-            room_id The unique Id for the living space
+        Arguments:
+                room_id The unique Id for the living space
         Returns:
             List    Record of a living space
         """
@@ -232,8 +232,8 @@ class LivingSpace(Rooms):
         """
         Get the details of a living space
 
-        Args:
-            room_id The unique Id for the room
+        Arguments:
+                room_id The unique Id for the room
         Returns:
             list    Records of the fellows accoomodated in a room
         """
@@ -245,9 +245,9 @@ class LivingSpace(Rooms):
     def allocate_room(self, fellow_id, room_id):
         """Allocate a living space to a fellow
 
-        Args:
-            fellow_id  The unique ID of the fellow
-            room_id    The uniquer ID of the living space to be accomodated
+        Arguments:
+                fellow_id  The unique ID of the fellow
+                room_id    The uniquer ID of the living space to be accomodated
 
         Returns:
             Boolean  True if updated, otherwise False

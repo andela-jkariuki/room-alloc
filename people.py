@@ -1,18 +1,29 @@
+#!/usr/bin/env python
+"""Room Classes"""
 import random
-from db.dbManager import DBManager
-from rooms import Rooms, LivingSpace, OfficeSpace
 from pprint import pprint as pp
 import tkFileDialog as tk
+from db.dbManager import DBManager
+from rooms import Rooms, LivingSpace, OfficeSpace
 
 class Person:
+    """Rooms class to handle behaviors common to both Fellows and staff"""
     def __init__(self):
+        """Create instance of the database"""
         self.db = DBManager('room_alloc.db')
 
     def set_name(self, first_name, last_name):
+        """Return a sentence cased name from first and last name
+
+        Arguments:
+                first_name (string) A person's first name
+                last_name (string)  A person's last name
+        """
         name = first_name + ' ' + last_name
         self.name = name.title()
 
     def unallocated(self, args):
+        """Print out a list of all unallocated fellows and staff members"""
         unallocated_fellows = Fellow().unallocated()
         unallocated_staff = Staff().unallocated()
 
@@ -71,16 +82,23 @@ class Person:
 
 
 class Staff(Person):
+    """Staff contains the characteristics and behaviors of a staff member"""
     def __init__(self):
+        """Create instance of the database"""
         self.db = DBManager('room_alloc.db')
 
     def add_staff(self, args):
-        """Add a new staff member to the system"""
+        """Add a new staff member to the system
 
+        Arguments:
+                args (dict) First Name and Last name of the user
+
+        Returns:
+            Boolean     True if successful, otherwise False
+        """
         self.person = Person()
         self.person.set_name(args['<first_name>'], args['<last_name>'])
 
-        """add a new staff to the system"""
         office_spaces = OfficeSpace().office_spaces()
         office_spaces = [i for i in office_spaces if i[-1] < OfficeSpace.room_space]
         if len(office_spaces) != 0:
@@ -92,23 +110,33 @@ class Staff(Person):
             if staff_id:
                 print("%s succesfully added. Staff ID is %d" % (self.person.name, staff_id))
                 print("%s's office space is in %s." % (self.person.name, office_space[1]))
+                return True
             else:
                 print("Error adding new staff. Please try again")
+                return False
         else:
             new_staff = "INSERT INTO staff(name, room_id) VALUES ('%s', NULL)" % (self.person.name)
             staff_id = self.db.insert(new_staff)
 
             if staff_id:
                 print("%s succesfully added. Staff ID is %d" % (self.person.name, staff_id))
+                return True
             else:
                 print("Error adding new staff. Please try again")
-
+                return False
             print("There are no vacant office spaces. Please check in later to allocate %s" % (self.person.name))
             return False
 
 
     def reallocate(self, args):
-        """Reallocate a staff member to a new office space"""
+        """Reallocate a staff member to a new office space
+
+        Arguments:
+                args (dict) Person Identifier and the office to reallocate to
+
+        Returns:
+            Boolean     True if successful, otherwise False
+        """
 
         staff_id = int(args['<person_identifier>'])
         staff = self.db.select_one("SELECT * FROM staff WHERE id = %d"% (staff_id))
@@ -126,17 +154,26 @@ class Staff(Person):
                     if len(room_occupancy) < office.room_space:
                         if office.allocate_room(staff_id, new_room[0]):
                             print("%s is now residing in %s" % (staff[1], new_room_name))
+                            return True
                     else:
                         print("%s is already fully occupied. Please try another room" % (new_room_name))
+                        return False
                 else:
                     print("No office space by that name. Please try again")
+                    return False
             else:
                 print("%s already belongs in %s" % (staff[1], new_room_name))
+                return False
         else:
             print("No staff by the provided staff id '%d'" % staff_id)
+            return False
 
     def unallocated(self):
-        """Return a list of unallocated staff"""
+        """Get a list of unallocated staff members
+
+        Returns:
+                List of unallocated Staff members or False
+        """
         unallocated = self.db.select("SELECT * FROM staff WHERE room_id is NULL or room_id = ''")
 
         if unallocated:
@@ -145,7 +182,11 @@ class Staff(Person):
 
 
 class Fellow(Person):
+    """Class Fellow contains the characteristics and behaviors of the
+    a Fellow
+    """
     def __init__(self):
+        """Create instance of the database"""
         self.db = DBManager('room_alloc.db')
 
     def add_fellow(self, args):
@@ -185,8 +226,14 @@ class Fellow(Person):
             return False
 
     def reallocate(self, args):
-        """Reallocate an existing fellow to a new room"""
+        """Reallocate an existing fellow to a new room
 
+         Arguments:
+                args (dict) Person Identifier and the living space to reallocate to
+
+        Returns:
+            Boolean     True if successful, otherwise False
+        """
         fellow_id = int(args['<person_identifier>'])
         fellow = self.db.select_one("SELECT * FROM fellows WHERE id = %d"% (fellow_id))
         if fellow:
@@ -202,6 +249,16 @@ class Fellow(Person):
             print("No fellow by the provided fellow id '%d'" % fellow_id)
 
     def reallocate_fellow(self, fellow, fellow_id, args):
+        """Reallocate an existing fellow to a new room
+
+         Arguments:
+                fellow  (List)  The fellow details
+                fellow_id (Int) The unique ID of the fellow
+                args (dict)     The request as received from the user
+
+        Returns:
+                Boolean     True if successful, otherwise False
+        """
         old_room = self.db.select_one("SELECT * FROM rooms WHERE id = %d AND type='L'" % (fellow[-1]))
         new_room_name = args['<new_room_name>']
         if old_room[1] != new_room_name:
@@ -212,14 +269,28 @@ class Fellow(Person):
                 if len(room_occupancy) < living.room_space:
                     if living.allocate_room(fellow_id, new_room[0]):
                         print("%s is now residing in %s" % (fellow[1], new_room_name))
+                        return True
                 else:
                     print("%s is already fully occupied. Please try another room" % (new_room_name))
+                    return False
             else:
                 print("No living space by that name. Please try again")
+                return False
         else:
             print("%s already belongs in %s" % (fellow[1], new_room_name))
+            return False
 
     def allocate_new_fellow(self, fellow, fellow_id, args):
+        """Reallocate an existing fellow to a new room
+
+         Arguments:
+                fellow  (List)  The fellow details
+                fellow_id (Int) The unique ID of the fellow
+                args (dict)     The request as received from the user
+
+        Returns:
+                Boolean     True if successful, otherwise False
+        """
         new_room_name = args['<new_room_name>']
         living = LivingSpace()
         new_room = living.living_space(new_room_name)
@@ -228,13 +299,20 @@ class Fellow(Person):
             if len(room_occupancy) < living.room_space:
                 if living.allocate_room(fellow_id, new_room[0]):
                     print("%s is now residing in %s" % (fellow[1], new_room_name))
+                    return True
             else:
                 print("%s is already fully occupied. Please try another room" % (new_room_name))
+                return False
         else:
             print("No living space by that name. Please try again")
+            return False
 
     def unallocated(self):
-        """Return a list of unallocated fellow"""
+        """Get a list of unallocated fellow
+
+        Returns:
+                List of unallocated fellows or False
+        """
         unallocated = self.db.select("SELECT * FROM  fellows WHERE room_id is NULL or room_id = ''")
 
         if unallocated:
