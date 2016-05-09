@@ -12,6 +12,3 @@ script:
   - nosetests --with-coverage
 after_success:
   - coveralls
-branches:
-    only:
-    - feature-review
