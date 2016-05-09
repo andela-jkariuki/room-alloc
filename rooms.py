@@ -3,28 +3,38 @@ from db.dbManager import DBManager
 from itertools import groupby
 
 class Rooms:
+    """Rooms class to handle behaviors common to both Offices and Living Spaces
+    """
     def __init__(self):
+        """Create instance of the database"""
         self.db = DBManager('room_alloc.db')
 
     def create_rooms(self, args):
         """Add new rooms to the rooms table
 
         Args:
-            args -  A dictionary that consists of the type of room space
-                    and the list of all the new rooms to be added.
+            args (dict) Type of room space to add and the list of all the new
+                        rooms to be added.
+        Returns:
+            Boolean     True if the rooms were created.
+                        False if the rooms were not created
         """
-
         room_type = 'L' if args['living'] else 'O'
         room_list = tuple((room, room_type) for room in args['<room_name>'])
 
         if self.db.run_many_queries("INSERT INTO rooms(name, type) VALUES (?, ?)", room_list):
             print 'New rooms succesfully created'
+            return True
         else:
             return 'Duplicate entries: A room already exist with provided name'
+            return False
 
     def room_allocations(self, args):
-        """Print out a list of all room allocations"""
+        """Print out a list of all room allocations
 
+        Args:
+            args (dict) Filename to print out the output (optional)
+        """
         office_spaces = self.db.select("SELECT rooms.id, rooms.name, rooms.type, staff.name FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O'")
 
         living_spaces = self.db.select("SELECT rooms.id, rooms.name, rooms.type, fellows.name FROM rooms LEFT JOIN fellows ON rooms.id = fellows.room_id WHERE rooms.type='L'")
@@ -79,7 +89,11 @@ class Rooms:
                 print "Room allocations printed out to %s" % (args['--o'])
 
     def room_allocation(self, args):
-        """Print out the rooom allocations for a particular room"""
+        """Print out the rooom allocations for a particular room
+        Args:
+            args (dict) Room name
+                        File name to print out the room allocation (optional)
+        """
         room_name = args['<room_name>']
         office_space = OfficeSpace();
         office =  office_space.office_space(room_name)
@@ -114,15 +128,17 @@ class Rooms:
                 print "%s occupants printed out to %s" % (room_name, room_name + ".txt")
 
 class OfficeSpace(Rooms):
+    """Class OfficeSpace contains the characteristics and behaviors of the
+    office spaces at amity
+    """
     room_space = 6
 
     def __init__(self):
+        """Create instance of the database"""
        self.db = DBManager('room_alloc.db')
 
     def office_spaces(self):
-        """
-        Return a list of office spaces with a vacancy
-        """
+        """Return a list of office spaces with a vacancy"""
 
         office_space = self.db.select("SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O' GROUP BY rooms.id")
         return office_space
@@ -132,9 +148,10 @@ class OfficeSpace(Rooms):
         Get the details of an office space
 
         Args:
-            office_id     The unique Id for the room
+            office_id    The unique Id for the room
+
         Returns:
-            list        The office_id, name and room_type
+            List          The office space record in the database
         """
         if isinstance(office_id, str):
             query = "SELECT * FROM rooms WHERE name = '%s' AND type='O'" % (office_id)
@@ -145,32 +162,44 @@ class OfficeSpace(Rooms):
             return office
         return False
 
-    def allocate_room(self, staff_id, room_id):
-        update_room = "UPDATE staff SET room_id = %d WHERE id = %d" % (room_id, staff_id)
-
-        if self.db.update(update_room):
-            return True
-        return False
-
     def office_space_occupancy(self, office_id):
         """
         Get the details of an office space
 
         Args:
-            office_id     The unique Id for the room
+            office_id   The unique Id for the room
         Returns:
-            list
+            list        Records of the staff occupying the office
         """
         room = self.office_space(office_id)
         if room:
             return self.db.select( "SELECT * FROM staff WHERE room_id = %d" % (room[0]))
         return False
 
-class LivingSpace(Rooms):
+    def allocate_room(self, staff_id, room_id):
+        """Allocate an office space to a staff member
 
+        Args:
+            staff_id    The unique ID of the staff member
+            room_id     The uniquer ID of the office space to be allocated
+
+        Returns:
+            Boolean     True if updated, otherwise False
+        """
+        update_room = "UPDATE staff SET room_id = %d WHERE id = %d" % (room_id, staff_id)
+
+        if self.db.update(update_room):
+            return True
+        return False
+
+class LivingSpace(Rooms):
+    """Class LivingSpace contains the characteristics and behaviors of the
+    living spaces at Amity
+    """
     room_space = 4
 
     def __init__(self):
+        """Create instance of the database"""
        self.db = DBManager('room_alloc.db')
 
     def living_spaces(self):
@@ -184,9 +213,9 @@ class LivingSpace(Rooms):
         Get the details of a living space
 
         Args:
-            room_id     The unique Id for the room
+            room_id     The unique Id for the living space
         Returns:
-            list        The room_id, name and room_type
+            List        Record of a living space
         """
         if isinstance(room_id, str):
             query = "SELECT * FROM rooms WHERE name = '%s' AND type='L'" % (room_id)
@@ -204,7 +233,7 @@ class LivingSpace(Rooms):
         Args:
             room_id     The unique Id for the room
         Returns:
-            list
+            list        Records of the fellows accoomodated in a room
         """
         room = self.living_space(room_id)
         if room:
@@ -212,6 +241,15 @@ class LivingSpace(Rooms):
         return False
 
     def allocate_room(self, fellow_id, room_id):
+        """Allocate a living space to a fellow
+
+        Args:
+            fellow_id    The unique ID of the fellow
+            room_id     The uniquer ID of the living space to be accomodated
+
+        Returns:
+            Boolean     True if updated, otherwise False
+        """
         update_room = "UPDATE fellows SET room_id = %d, accomodation = 'Y' WHERE id = %d" % (room_id, fellow_id)
 
         if self.db.update(update_room):
