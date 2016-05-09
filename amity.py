@@ -4,9 +4,14 @@ RoomLoc
 
 This provides guidance on how to handle room allocations for office and living
 spaces in Amity
+
 Usage:
-    room_loc reate_rooms (living|office) <room_name>...
-    room_loc add_person <first_name> <last_name> (fellow|staff) [y|n]
+    room_loc create_rooms (living|office) <room_name>...
+    room_loc add_person <first_name> <last_name> (fellow|staff) [--a=n]
+    room_loc reallocate_person (fellow|staff) <person_identifier> <new_room_name>
+    room_loc print_allocations [--o=allocations.txt]
+    room_loc print_room <room_name> [--o=y]
+    room_loc load_people
     room_loc (-i | --interactive)
     room_loc (-h | --help | --version)
 Options:
@@ -65,7 +70,6 @@ class Amity (cmd.Cmd):
     @pass_opt
     def do_add_person(self, args):
         """Usage: add_person <first_name> <last_name> (fellow|staff) [--a=n]"""
-
         if args['fellow']:
             fellow = Fellow()
             fellow.add_fellow(args)
@@ -107,7 +111,6 @@ class Amity (cmd.Cmd):
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
-
         print('Good Bye!')
         exit()
 
