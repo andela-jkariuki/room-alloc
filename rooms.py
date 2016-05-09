@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+"""Room Classes"""
 from pprint import pprint as pp
 from db.dbManager import DBManager
 from itertools import groupby
@@ -148,10 +150,10 @@ class OfficeSpace(Rooms):
         Get the details of an office space
 
         Args:
-            office_id    The unique Id for the room
+            office_id  The unique Id for the room
 
         Returns:
-            List          The office space record in the database
+            List       The office space record in the database
         """
         if isinstance(office_id, str):
             query = "SELECT * FROM rooms WHERE name = '%s' AND type='O'" % (office_id)
@@ -167,9 +169,9 @@ class OfficeSpace(Rooms):
         Get the details of an office space
 
         Args:
-            office_id   The unique Id for the room
+            office_id The unique Id for the room
         Returns:
-            list        Records of the staff occupying the office
+            list      Records of the staff occupying the office
         """
         room = self.office_space(office_id)
         if room:
@@ -180,11 +182,11 @@ class OfficeSpace(Rooms):
         """Allocate an office space to a staff member
 
         Args:
-            staff_id    The unique ID of the staff member
-            room_id     The uniquer ID of the office space to be allocated
+            staff_id  The unique ID of the staff member
+            room_id   The uniquer ID of the office space to be allocated
 
         Returns:
-            Boolean     True if updated, otherwise False
+            Boolean   True if updated, otherwise False
         """
         update_room = "UPDATE staff SET room_id = %d WHERE id = %d" % (room_id, staff_id)
 
@@ -213,9 +215,9 @@ class LivingSpace(Rooms):
         Get the details of a living space
 
         Args:
-            room_id     The unique Id for the living space
+            room_id The unique Id for the living space
         Returns:
-            List        Record of a living space
+            List    Record of a living space
         """
         if isinstance(room_id, str):
             query = "SELECT * FROM rooms WHERE name = '%s' AND type='L'" % (room_id)
@@ -231,9 +233,9 @@ class LivingSpace(Rooms):
         Get the details of a living space
 
         Args:
-            room_id     The unique Id for the room
+            room_id The unique Id for the room
         Returns:
-            list        Records of the fellows accoomodated in a room
+            list    Records of the fellows accoomodated in a room
         """
         room = self.living_space(room_id)
         if room:
@@ -244,11 +246,11 @@ class LivingSpace(Rooms):
         """Allocate a living space to a fellow
 
         Args:
-            fellow_id    The unique ID of the fellow
-            room_id     The uniquer ID of the living space to be accomodated
+            fellow_id  The unique ID of the fellow
+            room_id    The uniquer ID of the living space to be accomodated
 
         Returns:
-            Boolean     True if updated, otherwise False
+            Boolean  True if updated, otherwise False
         """
         update_room = "UPDATE fellows SET room_id = %d, accomodation = 'Y' WHERE id = %d" % (room_id, fellow_id)
 
