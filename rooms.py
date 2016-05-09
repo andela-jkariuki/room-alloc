@@ -250,7 +250,7 @@ class LivingSpace(Rooms):
                 room_id    The uniquer ID of the living space to be accomodated
 
         Returns:
-            Boolean  True if updated, otherwise False
+                Boolean  True if updated, otherwise False
         """
         update_room = "UPDATE fellows SET room_id = %d, accomodation = 'Y' WHERE id = %d" % (room_id, fellow_id)
 
