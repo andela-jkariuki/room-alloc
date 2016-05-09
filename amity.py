@@ -102,8 +102,8 @@ class Amity (cmd.Cmd):
     @pass_opt
     def do_load_people(self, args):
         """Usage: load_people"""
-        rooms = Rooms()
-        rooms.allocate_from_file(args)
+        people = Person()
+        people.allocate_from_file(args)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""

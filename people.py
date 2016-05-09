@@ -2,13 +2,15 @@ import random
 from db.dbManager import DBManager
 from rooms import Rooms, LivingSpace, OfficeSpace
 from pprint import pprint as pp
+import tkFileDialog as tk
 
 class Person:
     def __init__(self):
         self.db = DBManager('room_alloc.db')
 
     def set_name(self, first_name, last_name):
-        self.name = first_name + ' ' + last_name
+        name = first_name + ' ' + last_name
+        self.name = name.title()
 
     def unallocated(self, args):
         unallocated_fellows = Fellow().unallocated()
@@ -17,13 +19,13 @@ class Person:
         output = ''
         output += '*' * 30 + "\nSTAFF\n" + '*' * 30 + "\n"
         if unallocated_staff and len(unallocated_staff) != 0:
-            output += ", ".join([str(i[1]) for i in unallocated_staff])
+            output += "\n".join([str(i[1]) for i in unallocated_staff])
         else:
             output += 'All staff have been assigned'
 
         output += '\n\n' + '*' * 30 + "\nFELLOWS\n" + '*' * 30 + "\n"
         if unallocated_fellows and len(unallocated_fellows) != 0:
-            output += "\n".join([str(i[1]) for i in unallocated_fellows])
+            output += "\n".join([str(i[1]) + '\t[' + str(i[2]) + ']' for i in unallocated_fellows])
         else:
             output += 'All fellows have been assigned'
 
@@ -32,6 +34,41 @@ class Person:
             with open('unallocated.txt', 'wt') as f:
                 f.write(output)
                 print "Unallocated people printed out to %s" % ('unallocated.txt')
+
+    def allocate_from_file(self, args):
+        """Allocate rooms to users from a file"""
+        file = tk.askopenfile(mode = 'rt', title ='Load list of people to allocate rooms')
+
+        fellows = []
+        staff = []
+        with open(file.name, 'r') as f:
+            people = f.readlines()
+            for person in people:
+                person = person.split()
+                person_type = 'F' if person[2] == 'FELLOW' else 'S'
+
+                if person_type == 'F':
+                    try:
+                        fellow = {}
+                        fellow['<first_name>'] = person[0]
+                        fellow['<last_name>'] = person[1]
+                        fellow['--a'] = person[3]
+                        fellows.append(fellow)
+                    except:
+                        print("Invalid data file on for %s" % (first_name + last_name))
+
+                else:
+                    staff_member = {}
+                    staff_member['<first_name>'] = person[0]
+                    staff_member['<last_name>'] = person[1]
+                    staff.append(staff_member)
+
+            for i in range(len(fellows)):
+                add_new_fellow = Fellow().add_fellow(fellows[i])
+
+            for j in range(len(staff)):
+                add_new_staff = Staff().add_staff(staff[j])
+
 
 class Staff(Person):
     def __init__(self):
@@ -53,12 +90,21 @@ class Staff(Person):
             staff_id = self.db.insert(new_staff)
 
             if staff_id:
-                print("New Staff succesfully added. Staff ID is %d" % (staff_id))
-                print('%s office space is in %s.' % (self.person.name, office_space[1]))
+                print("%s succesfully added. Staff ID is %d" % (self.person.name, staff_id))
+                print("%s's office space is in %s." % (self.person.name, office_space[1]))
             else:
                 print("Error adding new staff. Please try again")
         else:
-            print("There are no vacant office spaces. Please check in later")
+            new_staff = "INSERT INTO staff(name, room_id) VALUES ('%s', NULL)" % (self.person.name)
+            staff_id = self.db.insert(new_staff)
+
+            if staff_id:
+                print("%s succesfully added. Staff ID is %d" % (self.person.name, staff_id))
+            else:
+                print("Error adding new staff. Please try again")
+
+            print("There are no vacant office spaces. Please check in later to allocate %s" % (self.person.name))
+            return False
 
 
     def reallocate(self, args):
@@ -113,10 +159,10 @@ class Fellow(Person):
         fellow_id = self.db.insert(new_fellow_query)
 
         if fellow_id:
-            print("New fellow succesfully added. Fellow ID is %d" % (fellow_id))
+            print("%s succesfully added. Fellow ID is %d" % (self.person.name, fellow_id))
             if self.accomodation == 'Y':
                 print('Searching for accomodation for the fellow...')
-                self.accomodate_fellow(fellow_id)
+                return self.accomodate_fellow(fellow_id)
             else:
                 print('accomodation not provided for fellow.')
         else:
@@ -135,7 +181,8 @@ class Fellow(Person):
             else:
                 print("Error acomomdating {}".format(self.person.name))
         else:
-            print("There are no vacant living spaces for now. Please check in later")
+            print("There are no vacant living spaces for now. Please check in later to accommodate %s" % (self.person.name))
+            return False
 
     def reallocate(self, args):
         """Reallocate an existing fellow to a new room"""
