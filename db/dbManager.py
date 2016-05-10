@@ -5,10 +5,14 @@ class DBManager:
     """Create a new connection to the sqlite database"""
     def __init__(self, db_name):
 
-        if db_name != "":
-            self.connection = lite.connect(db_name)
-        else:
-            self.connection = lite.connect("room_alloc.db")
+        try:
+            self.connection
+        except:
+            if db_name != "":
+                self.connection = lite.connect(db_name)
+            else:
+                self.connection = lite.connect("room_alloc.db")
+
         self.cursor = self.connection.cursor()
 
         self.migrations()
