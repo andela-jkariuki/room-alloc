@@ -119,9 +119,6 @@ class Staff(Person):
                 print("%s's office space is in %s." %
                       (self.person.name, office_space[1]))
                 return True
-            else:
-                print("Error adding new staff. Please try again")
-                return False
         else:
             new_staff = "INSERT INTO staff(name, room_id) VALUES ('%s', NULL)" % (
                 self.person.name)
@@ -131,9 +128,6 @@ class Staff(Person):
                 print("%s succesfully added. Staff ID is %d" %
                       (self.person.name, staff_id))
                 return True
-            else:
-                print("Error adding new staff. Please try again")
-                return False
             print("There are no vacant office spaces. Please check in later to allocate %s" % (
                 self.person.name))
             return False

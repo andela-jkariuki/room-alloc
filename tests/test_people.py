@@ -31,12 +31,18 @@ class PeopleTest(unittest.TestCase):
         staff = self.data.fetch_data("staff", False)
         self.assertEqual(0, len(staff))
 
-        self.data.create_office_spaces(['camelot', 'midgar'])
         new_staff = self.data.create_staff('Dej', 'Loaf')
         self.assertTrue(new_staff)
 
         staff = self.data.fetch_data("staff", False)
         self.assertEqual(1, len(staff))
+
+        self.data.create_office_spaces(['camelot', 'midgar'])
+        new_staff = self.data.create_staff('Dej', 'Loaf')
+        self.assertTrue(new_staff)
+
+        staff = self.data.fetch_data("staff", False)
+        self.assertEqual(2, len(staff))
 
     def tearDown(self):
         """Delete the test database"""
