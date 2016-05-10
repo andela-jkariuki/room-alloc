@@ -158,22 +158,15 @@ class Staff(Person):
                     room_occupancy = office.office_space_occupancy(new_room[0])
                     if len(room_occupancy) < office.room_space:
                         if office.allocate_room(staff_id, new_room[0]):
-                            print("%s is now residing in %s" %
-                                  (staff[1], new_room_name))
-                            return True
+                            return "%s is now residing in %s" % (staff[1], new_room_name)
                     else:
-                        print(
-                            "%s is already fully occupied. Please try another room" % (new_room_name))
-                        return False
+                        return "%s is already fully occupied. Please try another room" % (new_room_name)
                 else:
-                    print("No office space by that name. Please try again")
-                    return False
+                    return "No office space by that name. Please try again"
             else:
-                print("%s already belongs in %s" % (staff[1], new_room_name))
-                return False
+                return "%s already belongs in %s" % (staff[1], new_room_name)
         else:
-            print("No staff by the provided staff id '%d'" % staff_id)
-            return False
+            return "No staff by the provided staff id %d" % staff_id
 
     def unallocated(self):
         """Get a list of unallocated staff members

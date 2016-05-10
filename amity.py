@@ -84,7 +84,7 @@ class Amity (cmd.Cmd):
         if args['fellow']:
             Fellow().reallocate(args)
         else:
-            Staff().reallocate(args)
+            print(Staff().reallocate(args))
 
     @pass_opt
     def do_print_allocations(self, args):
