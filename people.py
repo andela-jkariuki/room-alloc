@@ -8,9 +8,9 @@ from rooms import LivingSpace, OfficeSpace
 
 class Person:
     """Rooms class to handle behaviors common to both Fellows and staff"""
-    def __init__(self):
+    def __init__(self, db_name=""):
         """Create instance of the database"""
-        self.db = DBManager('room_alloc.db')
+        self.db = DBManager(db_name)
 
     def set_name(self, first_name, last_name):
         """Return a sentence cased name from first and last name
@@ -83,9 +83,9 @@ class Person:
 
 class Staff(Person):
     """Staff contains the characteristics and behaviors of a staff member"""
-    def __init__(self):
+    def __init__(self, db_name=""):
         """Create instance of the database"""
-        self.db = DBManager('room_alloc.db')
+        self.db = DBManager(db_name)
 
     def add_staff(self, args):
         """Add a new staff member to the system
@@ -184,9 +184,9 @@ class Fellow(Person):
     """Class Fellow contains the characteristics and behaviors of the
     a Fellow
     """
-    def __init__(self):
+    def __init__(self, db_name=""):
         """Create instance of the database"""
-        self.db = DBManager('room_alloc.db')
+        self.db = DBManager(db_name)
 
     def add_fellow(self, args):
         """Add a new fellow to the system"""

@@ -7,9 +7,9 @@ from itertools import groupby
 class Rooms:
     """Rooms class to handle behaviors common to both Offices and Living Spaces
     """
-    def __init__(self):
+    def __init__(self, db_name=""):
         """Create instance of the database"""
-        self.db = DBManager('room_alloc.db')
+        self.db = DBManager(db_name)
 
     def create_rooms(self, args):
         """Add new rooms to the rooms table
@@ -136,9 +136,9 @@ class OfficeSpace(Rooms):
     """
     room_space = 6
 
-    def __init__(self):
+    def __init__(self, db_name=""):
         """Create instance of the database"""
-        self.db = DBManager('room_alloc.db')
+        self.db = DBManager(db_name)
 
     def office_spaces(self):
         """Return a list of office spaces with a vacancy"""
@@ -203,9 +203,9 @@ class LivingSpace(Rooms):
     """
     room_space = 4
 
-    def __init__(self):
+    def __init__(self, db_name=""):
         """Create instance of the database"""
-        self.db = DBManager('room_alloc.db')
+        self.db = DBManager(db_name)
 
     def living_spaces(self):
         """View a list of rooms with at least one vacancy"""
