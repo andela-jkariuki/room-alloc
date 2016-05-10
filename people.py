@@ -224,12 +224,9 @@ class Fellow(Person):
                 print("{} is now accommodated in {}".format(
                     self.person.name, living_space[1]))
                 return True
-            else:
-                print("Error acomomdating {}".format(self.person.name))
         else:
-            print("There are no vacant living spaces for now. Please check in later to accommodate %s" % (
-                self.person.name))
-            return False
+            return "There are no vacant living spaces for now. Please check in later to accommodate %s" % (
+                self.person.name)
 
     def reallocate(self, args):
         """Reallocate an existing fellow to a new room

@@ -74,6 +74,33 @@ class PeopleTest(unittest.TestCase):
         unallocated_fellows = fellow.unallocated()
         self.assertEquals(2, len(unallocated_fellows))
 
+    def test_no_vacancies_in_living_spaces(self):
+        """
+        Assert that a use is notified when there are no vacant living spaces to
+        allocate fellows
+        """
+        self.data.create_living_spaces(['woodwing'])
+
+        self.data.create_fellow("John", "Kariuki", "y")
+        self.data.create_fellow("Blue", "October", "y")
+        self.data.create_fellow("Steph", "Curry", "y")
+        self.data.create_fellow("Para", "More", "y")
+
+        unlucky_fellow = self.data.create_fellow("Amos", "Omondi", "y")
+        self.assertEqual(
+            'There are no vacant living spaces for now. Please check in later to accommodate Amos Omondi', unlucky_fellow)
+
+        self.data.create_living_spaces(['bluewing'])
+
+        fellow = Fellow()
+        self.data.create_fellow("Penny", "Wanjiru", "y")
+
+        unlucky_fellow = fellow.reallocate(
+            {'fellow': True, 'staff': False, '<person_identifier>': 6,
+             '<new_room_name>': 'woodwing'})
+        self.assertEqual(
+            'woodwing is already fully occupied. Please try another room', unlucky_fellow)
+
     def test_create_staff(self):
         """
         Assert that a user can add a new staff member
