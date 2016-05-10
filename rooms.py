@@ -25,10 +25,10 @@ class Rooms:
         room_list = tuple((room, room_type) for room in args['<room_name>'])
 
         if self.db.run_many_queries("INSERT INTO rooms(name, type) VALUES (?, ?)", room_list):
-            print 'New rooms succesfully created'
+            print('New rooms succesfully created')
             return True
         else:
-            return 'Duplicate entries: A room already exist with provided name'
+            print('Duplicate entries: A room already exist with provided name')
             return False
 
     def room_allocations(self, args):
@@ -88,7 +88,7 @@ class Rooms:
         if args['--o'] is not None:
             with open(args['--o'], 'wt') as f:
                 f.write(output)
-                print "Room allocations printed out to %s" % (args['--o'])
+                print("Room allocations printed out to %s" % (args['--o']))
 
     def room_allocation(self, args):
         """Print out the rooom allocations for a particular room
@@ -122,12 +122,12 @@ class Rooms:
             output += "%s has no occupants" % (room_name)
         else:
             output += occupants
-        print output
+        print(output)
 
         if args['--o'] is not None:
             with open(room_name + ".txt", 'wt') as f:
                 f.write(output)
-                print "%s occupants printed out to %s" % (room_name, room_name + ".txt")
+                print("%s occupants printed out to %s" % (room_name, room_name + ".txt"))
 
 
 class OfficeSpace(Rooms):

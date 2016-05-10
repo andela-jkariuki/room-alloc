@@ -44,7 +44,7 @@ class Person:
         if args['--o'] is not None:
             with open('unallocated.txt', 'wt') as f:
                 f.write(output)
-                print "Unallocated people printed out to %s" % ('unallocated.txt')
+                print("Unallocated people printed out to %s" % ('unallocated.txt'))
 
     def allocate_from_file(self, args):
         """Allocate rooms to users from a file"""
