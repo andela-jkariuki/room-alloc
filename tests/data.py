@@ -1,14 +1,17 @@
 from rooms import Rooms
+from people import Fellow
 from db.dbManager import DBManager
 
 
 class Data:
+    db_name = 'test.db'
+
     def __init__(self):
         """Create a test database"""
-        self.db = DBManager('test.db')
+        self.db = DBManager()
 
     def create_living_spaces(self):
-        rooms = Rooms('test.db')
+        rooms = Rooms()
         arguments = {'<room_name>': ['woodwing', 'westwing', 'eastwing'],
                      'living': True,
                      'office': False}
@@ -20,3 +23,10 @@ class Data:
             return self.db.select_one("SELECT * FROM %s" % (table_name))
         else:
             return self.db.select("SELECT * FROM  %s" % (table_name))
+
+    def create_fellow(self, first_name, last_name, accomodation):
+        arguments = {'<first_name>': first_name,
+                     '<last_name>': last_name,
+                     '--a': accomodation}
+        fellow = Fellow()
+        return fellow.add_fellow(arguments)

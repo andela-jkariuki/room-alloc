@@ -7,9 +7,9 @@ from itertools import groupby
 class Rooms:
     """Rooms class to handle behaviors common to both Offices and Living Spaces
     """
-    def __init__(self, db_name=""):
+    def __init__(self):
         """Create instance of the database"""
-        self.db = DBManager(db_name)
+        self.db = DBManager()
 
     def create_rooms(self, args):
         """Add new rooms to the rooms table
@@ -58,10 +58,14 @@ class Rooms:
             for staff in staff_occupancy:
                 living_space_allocations[room_name].append(staff[-1])
 
-        div = max(max([len(", ".join(i)) for i in
-                       office_space_allocations.values() if i[0] is not None]),
-                  max([len(", ".join(i)) for i in
-                      living_space_allocations.values() if i[0] is not None]))
+        try:
+            div = max(max([len(", ".join(i)) for i in
+                           office_space_allocations.values() if i[0] is not None]),
+                      max([len(", ".join(i)) for i in
+                          living_space_allocations.values() if i[0] is not None]),
+                      len('OFFICE SPACES'), len('LIVING SPACES'))
+        except ValueError:
+            div = 30
 
         output = ''
         output += '\n' + '*' * div + "\nOFFICE SPACES\n" + '*' * div + "\n\n"
@@ -113,6 +117,8 @@ class Rooms:
             return
         occupants = ", ".join([str(i[1]) for i in occupants])
         div = len(occupants)
+        if div == 0:
+            div = 30
 
         output = '*' * div + "\n"
         output += room_name.upper() + " (" + room_type + ")\n"
@@ -136,14 +142,14 @@ class OfficeSpace(Rooms):
     """
     room_space = 6
 
-    def __init__(self, db_name=""):
+    def __init__(self):
         """Create instance of the database"""
-        self.db = DBManager(db_name)
+        self.rooms = Rooms()
 
     def office_spaces(self):
         """Return a list of office spaces with a vacancy"""
 
-        office_space = self.db.select("SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O' GROUP BY rooms.id")
+        office_space = self.rooms.db.select("SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O' GROUP BY rooms.id")
         return office_space
 
     def office_space(self, office_id):
@@ -160,7 +166,7 @@ class OfficeSpace(Rooms):
             query = "SELECT * FROM rooms WHERE name = '%s' AND type='O'" % (office_id)
         elif isinstance(office_id, int):
             query = "SELECT * FROM rooms where id = %d AND type='O'" % (office_id)
-        office = self.db.select_one(query)
+        office = self.rooms.db.select_one(query)
         if office:
             return office
         return False
@@ -176,7 +182,7 @@ class OfficeSpace(Rooms):
         """
         room = self.office_space(office_id)
         if room:
-            return self.db.select(
+            return self.rooms.db.select(
                 "SELECT * FROM staff WHERE room_id = %d" % (room[0]))
         return False
 
@@ -192,7 +198,7 @@ class OfficeSpace(Rooms):
         """
         update_room = "UPDATE staff SET room_id = %d WHERE id = %d" % (room_id, staff_id)
 
-        if self.db.update(update_room):
+        if self.rooms.db.update(update_room):
             return True
         return False
 
@@ -203,14 +209,14 @@ class LivingSpace(Rooms):
     """
     room_space = 4
 
-    def __init__(self, db_name=""):
+    def __init__(self):
         """Create instance of the database"""
-        self.db = DBManager(db_name)
+        self.rooms = Rooms()
 
     def living_spaces(self):
         """View a list of rooms with at least one vacancy"""
 
-        living_spaces = self.db.select("SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN fellows ON rooms.id = fellows.room_id WHERE rooms.type='L' GROUP BY rooms.id")
+        living_spaces = self.rooms.db.select("SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN fellows ON rooms.id = fellows.room_id WHERE rooms.type='L' GROUP BY rooms.id")
         return living_spaces
 
     def living_space(self, room_id):
@@ -226,7 +232,7 @@ class LivingSpace(Rooms):
             query = "SELECT * FROM rooms WHERE name = '%s' AND type='L'" % (room_id)
         elif isinstance(room_id, int):
             query = "SELECT * FROM rooms where id = %d AND type='L'" % (room_id)
-        room = self.db.select_one(query)
+        room = self.rooms.db.select_one(query)
         if room:
             return room
         return False
@@ -242,7 +248,7 @@ class LivingSpace(Rooms):
         """
         room = self.living_space(room_id)
         if room:
-            return self.db.select("SELECT * FROM fellows WHERE room_id = %d" % (room[0]))
+            return self.rooms.db.select("SELECT * FROM fellows WHERE room_id = %d" % (room[0]))
         return False
 
     def allocate_room(self, fellow_id, room_id):
@@ -257,6 +263,6 @@ class LivingSpace(Rooms):
         """
         update_room = "UPDATE fellows SET room_id = %d, accomodation = 'Y' WHERE id = %d" % (room_id, fellow_id)
 
-        if self.db.update(update_room):
+        if self.rooms.db.update(update_room):
             return True
         return False
