@@ -161,6 +161,35 @@ class PeopleTest(unittest.TestCase):
         unallocated_staff = staff.unallocated()
         self.assertEquals(3, len(unallocated_staff))
 
+    def test_no_vacancies_in_office_spaces(self):
+        """
+        Assert that a use is notified when there are no vacant office spaces to
+        allocate staff members
+        """
+        self.data.create_office_spaces(['camelot'])
+
+        self.data.create_staff("John", "Kariuki")
+        self.data.create_staff("Blue", "October")
+        self.data.create_staff("Steph", "Curry")
+        self.data.create_staff("Para", "More")
+        self.data.create_staff("Evey", "Eve")
+        self.data.create_staff("Some", "Body")
+
+        unlucky_staff = self.data.create_staff("Amos", "Omondi")
+        self.assertEqual(
+            'There are no vacant office spaces. Please check in later to allocate Amos Omondi', unlucky_staff)
+
+        self.data.create_office_spaces(['midgar'])
+
+        staff = Staff()
+        self.data.create_staff("Penny", "Wanjiru")
+
+        unlucky_staff = staff.reallocate(
+            {'fellow': True, 'staff': False, '<person_identifier>': 8,
+             '<new_room_name>': 'camelot'})
+        self.assertEqual(
+            'camelot is already fully occupied. Please try another room', unlucky_staff)
+
     def tearDown(self):
         """Delete the test database"""
         if os.path.exists('room_alloc.db'):
