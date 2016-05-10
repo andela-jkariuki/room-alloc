@@ -316,7 +316,7 @@ class Fellow(Person):
         Returns:
                 List of unallocated fellows or False
         """
-        unallocated = self.db.select(
+        unallocated = self.person.db.select(
             "SELECT * FROM  fellows WHERE room_id is NULL or room_id = ''")
 
         if unallocated:

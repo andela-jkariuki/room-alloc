@@ -63,6 +63,17 @@ class PeopleTest(unittest.TestCase):
         self.assertEqual(
             'John Kariuki is now residing in midgar', valid_allocation)
 
+    def test_unallocated_fellows(self):
+        """Get a list of unallocated fellows"""
+        self.data.create_living_spaces(['woodwing'])
+        self.data.create_fellow("John", "Kariuki", "y")
+        self.data.create_fellow("John", "Kariuki", "n")
+        self.data.create_fellow("John", "Kariuki", "n")
+
+        fellow = Fellow()
+        unallocated_fellows = fellow.unallocated()
+        self.assertEquals(2, len(unallocated_fellows))
+
     def test_create_staff(self):
         """
         Assert that a user can add a new staff member
@@ -110,6 +121,18 @@ class PeopleTest(unittest.TestCase):
             {'<person_identifier>': 1, '<new_room_name>': 'midgar'})
         self.assertEqual(
             'John Kariuki is now residing in midgar', valid_allocation)
+
+    def test_unallocated_staff(self):
+        """Get a list of unallocated staff members"""
+        self.data.create_staff("John", "Kariuki")
+        self.data.create_staff("Jhene", "Aiko")
+        self.data.create_staff("Dej", "Loaf")
+        self.data.create_office_spaces(['camelot'])
+        self.data.create_staff('Steph', 'Curry')
+
+        staff = Staff()
+        unallocated_staff = staff.unallocated()
+        self.assertEquals(3, len(unallocated_staff))
 
     def tearDown(self):
         """Delete the test database"""
