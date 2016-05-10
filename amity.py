@@ -22,9 +22,9 @@ Options:
 import sys
 import cmd
 from docopt import docopt, DocoptExit
-from rooms import Rooms, LivingSpace, OfficeSpace
+from rooms import Rooms
 from people import Person, Staff, Fellow
-from pprint import pprint as pp
+
 
 def pass_opt(func):
     """
@@ -55,6 +55,7 @@ def pass_opt(func):
     fn.__doc__ = func.__doc__
     fn.__dict__.update(func.__dict__)
     return fn
+
 
 class Amity (cmd.Cmd):
     intro = 'Welcome to my interactive program!' \

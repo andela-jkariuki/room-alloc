@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """Room Classes"""
-from pprint import pprint as pp
 from db.dbManager import DBManager
 from itertools import groupby
+
 
 class Rooms:
     """Rooms class to handle behaviors common to both Offices and Living Spaces
@@ -15,7 +15,7 @@ class Rooms:
         """Add new rooms to the rooms table
 
         Arguments:
-                args (dict) Type of room space to add and the list of all the new
+                args (dict) Type of room space to add and list of all the new
                             rooms to be added.
         Returns:
             Boolean     True if the rooms were created.
@@ -58,28 +58,28 @@ class Rooms:
             for staff in staff_occupancy:
                 living_space_allocations[room_name].append(staff[-1])
 
-        divider = max(max([len(", ".join(i)) for i \
-            in office_space_allocations.values() if i[0] is not None]),
-            max([len(", ".join(i)) for i \
-            in living_space_allocations.values() if i[0] is not None]))
+        div = max(max([len(", ".join(i)) for i in
+                       office_space_allocations.values() if i[0] is not None]),
+                  max([len(", ".join(i)) for i in
+                      living_space_allocations.values() if i[0] is not None]))
 
         output = ''
-        output += '\n' + '*' * divider + "\nOFFICE SPACES\n" + '*' * divider + "\n\n"
+        output += '\n' + '*' * div + "\nOFFICE SPACES\n" + '*' * div + "\n\n"
         if len(office_space_allocations) != 0:
             for name, occupants in office_space_allocations.iteritems():
                 if occupants[0] is not None:
                     members = ", ".join(occupants)
-                    output += name + "\n" + '-' * divider + "\n" + members + "\n\n"
+                    output += name + "\n" + '-' * div + "\n" + members + "\n\n"
         else:
             output += "no office spaces are occupied"
 
-        output += '\n' + '*' * divider + "\nLIVING SPACES\n" + '*' * divider + "\n\n"
+        output += '\n' + '*' * div + "\nLIVING SPACES\n" + '*' * div + "\n\n"
 
         if len(living_space_allocations) != 0:
             for name, occupants in living_space_allocations.iteritems():
                 if occupants[0] is not None:
                     members = ", ".join(occupants)
-                    output += name + "\n" + '-' * divider + "\n" + members + "\n\n"
+                    output += name + "\n" + '-' * div + "\n" + members + "\n\n"
         else:
             output += "no living spaces are occupied"
 
@@ -94,11 +94,11 @@ class Rooms:
         """Print out the rooom allocations for a particular room
         Arguments:
                 args (dict) Room name
-                            File name to print out the room allocation (optional)
+                            File name to print out room allocation(optional)
         """
         room_name = args['<room_name>']
-        office_space = OfficeSpace();
-        office =  office_space.office_space(room_name)
+        office_space = OfficeSpace()
+        office = office_space.office_space(room_name)
         living_space = LivingSpace()
         living = living_space.living_space(room_name)
 
@@ -112,11 +112,11 @@ class Rooms:
             print("No room exists in amity with that name. please try again")
             return
         occupants = ", ".join([str(i[1]) for i in occupants])
-        divider = len(occupants)
+        div = len(occupants)
 
-        output = '*' * divider + "\n"
-        output += room_name.upper() + " (" + room_type+ ")\n"
-        output+= '*' * divider + "\n"
+        output = '*' * div + "\n"
+        output += room_name.upper() + " (" + room_type + ")\n"
+        output += '*' * div + "\n"
 
         if len(occupants) == 0:
             output += "%s has no occupants" % (room_name)
@@ -128,6 +128,7 @@ class Rooms:
             with open(room_name + ".txt", 'wt') as f:
                 f.write(output)
                 print "%s occupants printed out to %s" % (room_name, room_name + ".txt")
+
 
 class OfficeSpace(Rooms):
     """Class OfficeSpace contains the characteristics and behaviors of the
@@ -175,7 +176,8 @@ class OfficeSpace(Rooms):
         """
         room = self.office_space(office_id)
         if room:
-            return self.db.select( "SELECT * FROM staff WHERE room_id = %d" % (room[0]))
+            return self.db.select(
+                "SELECT * FROM staff WHERE room_id = %d" % (room[0]))
         return False
 
     def allocate_room(self, staff_id, room_id):
@@ -193,6 +195,7 @@ class OfficeSpace(Rooms):
         if self.db.update(update_room):
             return True
         return False
+
 
 class LivingSpace(Rooms):
     """Class LivingSpace contains the characteristics and behaviors of the
@@ -239,7 +242,7 @@ class LivingSpace(Rooms):
         """
         room = self.living_space(room_id)
         if room:
-            return self.db.select( "SELECT * FROM fellows WHERE room_id = %d" % (room[0]))
+            return self.db.select("SELECT * FROM fellows WHERE room_id = %d" % (room[0]))
         return False
 
     def allocate_room(self, fellow_id, room_id):
@@ -257,6 +260,3 @@ class LivingSpace(Rooms):
         if self.db.update(update_room):
             return True
         return False
-
-
-

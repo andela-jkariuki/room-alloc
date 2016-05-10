@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 """Room Classes"""
 import random
-from pprint import pprint as pp
 import tkFileDialog as tk
 from db.dbManager import DBManager
-from rooms import Rooms, LivingSpace, OfficeSpace
+from rooms import LivingSpace, OfficeSpace
+
 
 class Person:
     """Rooms class to handle behaviors common to both Fellows and staff"""
@@ -75,10 +75,10 @@ class Person:
                     staff.append(staff_member)
 
             for i in range(len(fellows)):
-                add_new_fellow = Fellow().add_fellow(fellows[i])
+                Fellow().add_fellow(fellows[i])
 
             for j in range(len(staff)):
-                add_new_staff = Staff().add_staff(staff[j])
+                Staff().add_staff(staff[j])
 
 
 class Staff(Person):
@@ -126,7 +126,6 @@ class Staff(Person):
                 return False
             print("There are no vacant office spaces. Please check in later to allocate %s" % (self.person.name))
             return False
-
 
     def reallocate(self, args):
         """Reallocate a staff member to a new office space
@@ -229,7 +228,7 @@ class Fellow(Person):
         """Reallocate an existing fellow to a new room
 
          Arguments:
-                args (dict) Person Identifier and the living space to reallocate to
+                args (dict) Person ID and the living space to reallocate to
 
         Returns:
             Boolean     True if successful, otherwise False
@@ -318,6 +317,3 @@ class Fellow(Person):
         if unallocated:
             return unallocated
         return False
-
-
-
