@@ -10,9 +10,9 @@ class Data:
         """Create a test database"""
         self.db = DBManager()
 
-    def create_living_spaces(self):
+    def create_living_spaces(self, room_names):
         rooms = Rooms()
-        arguments = {'<room_name>': ['woodwing', 'westwing', 'eastwing'],
+        arguments = {'<room_name>': room_names,
                      'living': True,
                      'office': False}
 

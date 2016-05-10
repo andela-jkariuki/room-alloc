@@ -16,7 +16,7 @@ class PeopleTest(unittest.TestCase):
         fellows = self.data.fetch_data("fellows", False)
         self.assertEqual(0, len(fellows))
 
-        self.data.create_living_spaces()
+        self.data.create_living_spaces(['woodwing', 'westwing', 'eastwing'])
 
         new_fellow = self.data.create_fellow("John", "Kariuki", "y")
         self.assertTrue(new_fellow)

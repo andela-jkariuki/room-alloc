@@ -22,18 +22,29 @@ class RoomTest(unittest.TestCase):
         all_rooms = self.data.fetch_data("rooms", False)
         self.assertEqual(0, len(all_rooms))
 
-        new_rooms = self.data.create_living_spaces()
-        self.assertTrue(new_rooms)
+        new_rooms = self.data.create_living_spaces(
+            ['woodwing', 'westwing', 'eastwing'])
+        self.assertEqual('New rooms succesfully created', new_rooms)
 
         all_rooms = self.data.fetch_data("rooms", False)
         self.assertEqual(3, len(all_rooms))
         self.assertTrue('woodwing' in all_rooms[0])
         self.assertTrue('L' in all_rooms[0])
 
+    def test_duplicate_room_error(self):
+        """
+        Assert that an error is thrown on creating duplicate rooms
+        """
+        self.data.create_living_spaces(['woodwing'])
+        duplicate_room = self.data.create_living_spaces(['woodwing'])
+        self.assertEqual(
+            'Duplicate entries: A room already exist with provided name',
+            duplicate_room)
+
     def tearDown(self):
         """Delete the test database"""
-        if os.path.exists('test.db'):
-            os.remove('test.db')
+        if os.path.exists('room_alloc.db'):
+            os.remove('room_alloc.db')
 
 if __name__ == '__main__':
     unittest.main()

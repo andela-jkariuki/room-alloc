@@ -25,11 +25,9 @@ class Rooms:
         room_list = tuple((room, room_type) for room in args['<room_name>'])
 
         if self.db.run_many_queries("INSERT INTO rooms(name, type) VALUES (?, ?)", room_list):
-            print('New rooms succesfully created')
-            return True
+            return 'New rooms succesfully created'
         else:
-            print('Duplicate entries: A room already exist with provided name')
-            return False
+            return 'Duplicate entries: A room already exist with provided name'
 
     def room_allocations(self, args):
         """Print out a list of all room allocations
