@@ -73,7 +73,7 @@ class Amity (cmd.Cmd):
         """Usage: add_person <first_name> <last_name> (fellow|staff) [--a=n]"""
         if args['fellow']:
             fellow = Fellow()
-            fellow.add_fellow(args)
+            print(fellow.add_fellow(args))
         else:
             staff = Staff()
             staff.add_staff(args)

@@ -208,9 +208,7 @@ class Fellow(Person):
                 print('Searching for accomodation for the fellow...')
                 return self.accomodate_fellow(fellow_id)
             else:
-                print('accomodation not provided for fellow.')
-        else:
-            print("Error adding new fellow. Please try again")
+                return 'accomodation not provided for fellow.'
 
     def accomodate_fellow(self, fellow_id):
         """Accomodate a new fellow in the living spaces"""

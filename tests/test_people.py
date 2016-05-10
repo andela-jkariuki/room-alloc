@@ -22,8 +22,11 @@ class PeopleTest(unittest.TestCase):
         new_fellow = self.data.create_fellow("John", "Kariuki", "y")
         self.assertTrue(new_fellow)
 
+        new_fellow = self.data.create_fellow("John", "Kariuki", "n")
+        self.assertEqual("accomodation not provided for fellow.", new_fellow)
+
         fellows = self.data.fetch_data("fellows", False)
-        self.assertEqual(1, len(fellows))
+        self.assertEqual(2, len(fellows))
 
     def test_create_staff(self):
         """
