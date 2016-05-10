@@ -1,7 +1,7 @@
 import unittest
 import os
 from data import Data
-from people import Staff
+from people import Staff, Fellow
 
 
 class PeopleTest(unittest.TestCase):
@@ -27,6 +27,41 @@ class PeopleTest(unittest.TestCase):
 
         fellows = self.data.fetch_data("fellows", False)
         self.assertEqual(2, len(fellows))
+
+    def test_reallocate_fellow(self):
+        """
+        Assert that a user can reallocate a staff member
+        """
+        self.data.create_living_spaces(['woodwing'])
+        self.data.create_fellow("John", "Kariuki", "y")
+
+        fellow = Fellow()
+
+        invalid_id = fellow.reallocate(
+            {'fellow': True, 'staff': False, '<person_identifier>': 10,
+             '<new_room_name>': 'camelot'})
+
+        self.assertEqual('No fellow by the provided fellow id 10', invalid_id)
+
+        invalid_allocation = fellow.reallocate(
+            {'fellow': True, 'staff': False, '<person_identifier>': 1,
+             '<new_room_name>': 'woodwing'})
+        self.assertEqual(
+            'John Kariuki already belongs in woodwing', invalid_allocation)
+
+        invalid_room = fellow.reallocate(
+            {'fellow': True, 'staff': False, '<person_identifier>': 1,
+             '<new_room_name>': 'randomnam3'})
+        self.assertEqual(
+            'No living space by that name. Please try again', invalid_room)
+
+        self.data.create_living_spaces(['midgar'])
+
+        valid_allocation = fellow.reallocate(
+            {'fellow': True, 'staff': False, '<person_identifier>': 1,
+             '<new_room_name>': 'midgar'})
+        self.assertEqual(
+            'John Kariuki is now residing in midgar', valid_allocation)
 
     def test_create_staff(self):
         """

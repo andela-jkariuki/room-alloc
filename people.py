@@ -253,9 +253,9 @@ class Fellow(Person):
                     print("%s has not been allocated into any room." %
                           format(fellow[1]))
             else:
-                self.reallocate_fellow(fellow, fellow_id, args)
+                return self.reallocate_fellow(fellow, fellow_id, args)
         else:
-            print("No fellow by the provided fellow id '%d'" % fellow_id)
+            return "No fellow by the provided fellow id %d" % fellow_id
 
     def reallocate_fellow(self, fellow, fellow_id, args):
         """Reallocate an existing fellow to a new room
@@ -278,19 +278,13 @@ class Fellow(Person):
                 room_occupancy = living.living_space_occupancy(new_room[0])
                 if len(room_occupancy) < living.room_space:
                     if living.allocate_room(fellow_id, new_room[0]):
-                        print("%s is now residing in %s" %
-                              (fellow[1], new_room_name))
-                        return True
+                        return "%s is now residing in %s" % (fellow[1], new_room_name)
                 else:
-                    print(
-                        "%s is already fully occupied. Please try another room" % (new_room_name))
-                    return False
+                    return "%s is already fully occupied. Please try another room" % (new_room_name)
             else:
-                print("No living space by that name. Please try again")
-                return False
+                return "No living space by that name. Please try again"
         else:
-            print("%s already belongs in %s" % (fellow[1], new_room_name))
-            return False
+            return "%s already belongs in %s" % (fellow[1], new_room_name)
 
     def allocate_new_fellow(self, fellow, fellow_id, args):
         """Reallocate an existing fellow to a new room
@@ -310,16 +304,11 @@ class Fellow(Person):
             room_occupancy = living.living_space_occupancy(new_room[0])
             if len(room_occupancy) < living.room_space:
                 if living.allocate_room(fellow_id, new_room[0]):
-                    print("%s is now residing in %s" %
-                          (fellow[1], new_room_name))
-                    return True
+                    return "%s is now residing in %s" % (fellow[1], new_room_name)
             else:
-                print(
-                    "%s is already fully occupied. Please try another room" % (new_room_name))
-                return False
+                return "%s is already fully occupied. Please try another room" % (new_room_name)
         else:
-            print("No living space by that name. Please try again")
-            return False
+            return "No living space by that name. Please try again"
 
     def unallocated(self):
         """Get a list of unallocated fellow

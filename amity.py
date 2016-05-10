@@ -82,7 +82,7 @@ class Amity (cmd.Cmd):
     def do_reallocate_person(self, args):
         """Usage: reallocate_person (fellow|staff) <person_identifier> <new_room_name>"""
         if args['fellow']:
-            Fellow().reallocate(args)
+            print(Fellow().reallocate(args))
         else:
             print(Staff().reallocate(args))
 
