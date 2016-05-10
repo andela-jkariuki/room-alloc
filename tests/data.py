@@ -1,5 +1,5 @@
 from rooms import Rooms
-from people import Fellow
+from people import Fellow, Staff
 from db.dbManager import DBManager
 
 
@@ -18,6 +18,14 @@ class Data:
 
         return rooms.create_rooms(arguments)
 
+    def create_office_spaces(self, room_names):
+        rooms = Rooms()
+        arguments = {'<room_name>': room_names,
+                     'living': False,
+                     'office': True}
+
+        return rooms.create_rooms(arguments)
+
     def fetch_data(self, table_name, single_record=True):
         if single_record:
             return self.db.select_one("SELECT * FROM %s" % (table_name))
@@ -30,3 +38,9 @@ class Data:
                      '--a': accomodation}
         fellow = Fellow()
         return fellow.add_fellow(arguments)
+
+    def create_staff(self, first_name, last_name):
+        arguments = {'<first_name>': first_name,
+                     '<last_name>': last_name}
+        staff = Staff()
+        return staff.add_staff(arguments)
