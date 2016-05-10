@@ -127,10 +127,9 @@ class Staff(Person):
             if staff_id:
                 print("%s succesfully added. Staff ID is %d" %
                       (self.person.name, staff_id))
+                print("There are no vacant office spaces. Please check in later to allocate %s" % (
+                    self.person.name))
                 return True
-            print("There are no vacant office spaces. Please check in later to allocate %s" % (
-                self.person.name))
-            return False
 
     def reallocate(self, args):
         """Reallocate a staff member to a new office space
