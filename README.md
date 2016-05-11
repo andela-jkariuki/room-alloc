@@ -14,7 +14,7 @@ Amity works under the following constraints
 4. Staff cannot be allocated living spaces.
 5. Fellows have a choice to choose a living space or not.
 
-##Installation
+## Installation
 
 To set up room-alloc, make sure that you have python and pip installed on your workstation.
 
@@ -45,3 +45,42 @@ Confirm your installed packages
 $ pip list
 ```
 
+## Usage
+
+## Contributing
+
+Contributions are **welcome** and will be fully **credited**.
+
+We accept contributions via Pull Requests on [Github](https://github.com/andela-jkariuki/room-alloc).
+
+## Security
+
+If you discover any security related issues, please email me at [John Kariuki](mailto:john.kariuki@andela.com) or create an issue.
+
+## Credits
+
+[John kariuki](https://github.com/andela-jkariuki)
+
+## License
+
+### The MIT License (MIT)
+
+Copyright (c) 2016 John kariuki <john.kariuki@andela.com>
+
+> Permission is hereby granted, free of charge, to any person obtaining a copy
+> of this software and associated documentation files (the "Software"), to deal
+> in the Software without restriction, including without limitation the rights
+> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+> copies of the Software, and to permit persons to whom the Software is
+> furnished to do so, subject to the following conditions:
+>
+> The above copyright notice and this permission notice shall be included in
+> all copies or substantial portions of the Software.
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+> THE SOFTWARE.
