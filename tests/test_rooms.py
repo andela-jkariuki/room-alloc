@@ -66,6 +66,37 @@ class RoomTest(unittest.TestCase):
             self.assertTrue('Blue October, June Bag\n' in lines)
         os.remove('allocations.txt')
 
+    def test_room_allocation(self):
+        """
+        Test that a user can view the allocation of a particular room
+        """
+        self.data.create_office_spaces(['midgar'])
+        self.data.create_living_spaces(['woodwing'])
+
+        self.data.create_fellow("John", "Kariuki", "y")
+        self.data.create_fellow("Penny", "Wanjiru", "y")
+        self.data.create_fellow("Blue", "October", "n")
+
+        self.data.create_staff("June", "Bag")
+        self.data.create_staff("Blue", "October")
+
+        rooms = Rooms()
+        rooms.room_allocation({'--o': 'y', '<room_name>': 'midgar'})
+        self.assertTrue(os.path.exists('midgar.txt'))
+        with open('midgar.txt') as f:
+            lines = f.readlines()
+            self.assertTrue('MIDGAR (OFFICE SPACE)\n' in lines)
+            self.assertTrue('June Bag, Blue October' in lines)
+        os.remove('midgar.txt')
+
+        rooms.room_allocation({'--o': 'y', '<room_name>': 'woodwing'})
+        self.assertTrue(os.path.exists('woodwing.txt'))
+        with open('woodwing.txt') as f:
+            lines = f.readlines()
+            self.assertTrue('WOODWING (LIVING SPACE)\n' in lines)
+            self.assertTrue('John Kariuki, Penny Wanjiru' in lines)
+        os.remove('woodwing.txt')
+
     def tearDown(self):
         """Delete the test database"""
         if os.path.exists('room_alloc.db'):
