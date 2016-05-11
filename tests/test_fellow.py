@@ -3,6 +3,7 @@ import os
 from people import Fellow
 from data import Data
 
+
 class PeopleTest(unittest.TestCase):
     """Tests for Fellow class"""
 
@@ -99,6 +100,24 @@ class PeopleTest(unittest.TestCase):
              '<new_room_name>': 'woodwing'})
         self.assertEqual(
             'woodwing is already fully occupied. Please try another room', unlucky_fellow)
+
+    def test_allocate_new_fellow(self):
+        """Test allocate new fellow method
+        """
+        self.data.create_living_spaces(['woodwing'])
+        self.data.create_fellow("John", "Kariuki", "y")
+        self.data.create_living_spaces(['bluewing'])
+
+        fellow = Fellow()
+        wrong_space = fellow.allocate_new_fellow(
+            (2, 'John Kariuki', 'N', None), 2, {'<new_room_name>': 'random3'})
+        self.assertEqual(
+            'No living space by that name. Please try again', wrong_space)
+
+        fellow = fellow.allocate_new_fellow(
+            (2, 'John Kariuki', 'N', None), 2, {'<new_room_name>': 'bluewing'})
+        self.assertEqual(
+            "John Kariuki is now residing in bluewing", fellow)
 
     def tearDown(self):
         """Delete the test database"""
