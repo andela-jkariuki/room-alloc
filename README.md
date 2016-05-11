@@ -83,7 +83,6 @@ Add a fellow that opts in to the andela accommodation
 add_person Amos Omondi fellow --a=y
 ```
 
-
 Add a fellow that opts out of the andela accommodation
 ```bash
 add_person Amos Omondi fellow
@@ -105,6 +104,31 @@ Reallocate a staff with id 10 from midgar to camelot
 
 ```bash
 reallocate_person staff 10 camelot
+```
+
+**4. Print Stuff**
+
+The print methods allow you to print out room allocations for all rooms, one room or list of unallocated people.
+You can also specify an optional `--o` parameter to write the data to a file.
+
+**Print room allocations**
+
+Print out a list of all room allocations at amity
+```bash
+print_allocations --o=y
+```
+**Print unallocated**
+
+Print out a list of all unallocated people (staff members and fellows)
+```bash
+print_unallocated --o=y
+```
+
+**Print out room details**
+
+Print out a list of the allocations of a particular room at amity
+```bash
+print_room camelot --o=y
 ```
 
 ## Contributing
