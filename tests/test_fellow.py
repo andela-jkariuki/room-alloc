@@ -114,10 +114,19 @@ class PeopleTest(unittest.TestCase):
         self.assertEqual(
             'No living space by that name. Please try again', wrong_space)
 
-        fellow = fellow.allocate_new_fellow(
+        allocate = fellow.allocate_new_fellow(
             (2, 'John Kariuki', 'N', None), 2, {'<new_room_name>': 'bluewing'})
         self.assertEqual(
-            "John Kariuki is now residing in bluewing", fellow)
+            "John Kariuki is now residing in bluewing", allocate)
+
+        for i in range(7):
+            self.data.create_fellow("John", "Kariuki", "y")
+
+        full_space = fellow.allocate_new_fellow(
+            (2, 'John Kariuki', 'N', None), 2, {'<new_room_name>': 'bluewing'})
+        self.assertEqual(
+            "bluewing is already fully occupied. Please try another room",
+            full_space)
 
     def tearDown(self):
         """Delete the test database"""
