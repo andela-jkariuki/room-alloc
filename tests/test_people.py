@@ -199,7 +199,7 @@ class PeopleTest(unittest.TestCase):
         self.data.create_living_spaces(['woodwing'])
 
         self.data.create_fellow("John", "Kariuki", "y")
-        self.data.create_fellow("Blue", "October", "y")
+        self.data.create_fellow("Judas", "Iscariot", "y")
         self.data.create_fellow("Blue", "October", "n")
 
         self.data.create_staff("John", "Kariuki")

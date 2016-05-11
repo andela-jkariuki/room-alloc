@@ -1,6 +1,7 @@
 import unittest
 import os
 from data import Data
+from rooms import Rooms
 
 
 class RoomTest(unittest.TestCase):
@@ -40,6 +41,30 @@ class RoomTest(unittest.TestCase):
         self.assertEqual(
             'Duplicate entries: A room already exist with provided name',
             duplicate_room)
+
+    def test_room_allocations(self):
+        """
+        Test that a user can view a list of room allocations
+        """
+        self.data.create_office_spaces(['midgar'])
+        self.data.create_living_spaces(['woodwing'])
+
+        self.data.create_fellow("John", "Kariuki", "y")
+        self.data.create_fellow("Penny", "Wanjiru", "y")
+        self.data.create_fellow("Blue", "October", "n")
+
+        self.data.create_staff("June", "Bag")
+        self.data.create_staff("Blue", "October")
+
+        rooms = Rooms()
+        rooms.room_allocations({'--o': 'allocations.txt'})
+        self.assertTrue(os.path.exists('allocations.txt'))
+
+        with open('allocations.txt') as f:
+            lines = f.readlines()
+            self.assertTrue('John Kariuki, Penny Wanjiru\n' in lines)
+            self.assertTrue('Blue October, June Bag\n' in lines)
+        os.remove('allocations.txt')
 
     def tearDown(self):
         """Delete the test database"""
