@@ -14,3 +14,7 @@ Amity works under the following constraints
 4. Staff cannot be allocated living spaces.
 5. Fellows have a choice to choose a living space or not.
 
+To set up room-alloc, make sure that you have python and pip installed on your workstation.
+
+I highly recommend that you use [Virtualenvwrapper](http://virtualenvwrapper.readthedocs.io/en/latest/) for an isolated working environment.
+
