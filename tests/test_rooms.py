@@ -49,6 +49,14 @@ class RoomTest(unittest.TestCase):
         self.data.create_office_spaces(['midgar'])
         self.data.create_living_spaces(['woodwing'])
 
+        rooms = Rooms()
+        rooms.room_allocations({'--o': 'allocations.txt'})
+        with open('allocations.txt') as f:
+            lines = f.readlines()
+            self.assertTrue('no office spaces are occupied\n' in lines)
+            self.assertTrue('no living spaces are occupied' in lines)
+        os.remove('allocations.txt')
+
         self.data.create_fellow("John", "Kariuki", "y")
         self.data.create_fellow("Penny", "Wanjiru", "y")
         self.data.create_fellow("Blue", "October", "n")
@@ -56,7 +64,6 @@ class RoomTest(unittest.TestCase):
         self.data.create_staff("June", "Bag")
         self.data.create_staff("Blue", "October")
 
-        rooms = Rooms()
         rooms.room_allocations({'--o': 'allocations.txt'})
         self.assertTrue(os.path.exists('allocations.txt'))
 
