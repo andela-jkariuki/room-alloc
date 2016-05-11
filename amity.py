@@ -22,9 +22,9 @@ Options:
 import sys
 import cmd
 from docopt import docopt, DocoptExit
-from rooms import Rooms, LivingSpace, OfficeSpace
+from rooms import Rooms
 from people import Person, Staff, Fellow
-from pprint import pprint as pp
+
 
 def pass_opt(func):
     """
@@ -56,6 +56,7 @@ def pass_opt(func):
     fn.__dict__.update(func.__dict__)
     return fn
 
+
 class Amity (cmd.Cmd):
     intro = 'Welcome to my interactive program!' \
         + ' (type help for a list of commands.)'
@@ -65,14 +66,14 @@ class Amity (cmd.Cmd):
     @pass_opt
     def do_create_rooms(self, args):
         """Usage: create_rooms (living|office) <room_name>..."""
-        Rooms().create_rooms(args)
+        print(Rooms().create_rooms(args))
 
     @pass_opt
     def do_add_person(self, args):
         """Usage: add_person <first_name> <last_name> (fellow|staff) [--a=n]"""
         if args['fellow']:
             fellow = Fellow()
-            fellow.add_fellow(args)
+            print(fellow.add_fellow(args))
         else:
             staff = Staff()
             staff.add_staff(args)
@@ -81,21 +82,21 @@ class Amity (cmd.Cmd):
     def do_reallocate_person(self, args):
         """Usage: reallocate_person (fellow|staff) <person_identifier> <new_room_name>"""
         if args['fellow']:
-            Fellow().reallocate(args)
+            print(Fellow().reallocate(args))
         else:
-            Staff().reallocate(args)
+            print(Staff().reallocate(args))
 
     @pass_opt
     def do_print_allocations(self, args):
         """Usage: print_allocations [--o=allocations.txt]"""
         rooms = Rooms()
-        rooms.room_allocations(args)
+        print(rooms.room_allocations(args))
 
     @pass_opt
     def do_print_room(self, args):
         """Usage: print_room <room_name> [--o=y]"""
         rooms = Rooms()
-        rooms.room_allocation(args)
+        print(rooms.room_allocation(args))
 
     @pass_opt
     def do_print_unallocated(self, args):

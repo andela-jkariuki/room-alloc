@@ -1,11 +1,12 @@
 import sqlite3 as lite
 
+
 class DBManager:
     """Create a new connection to the sqlite database"""
-    def __init__(self, db_name):
+    def __init__(self):
+        db_name = "room_alloc.db"
         self.connection = lite.connect(db_name)
         self.cursor = self.connection.cursor()
-
         self.migrations()
 
     def migrations(self):
