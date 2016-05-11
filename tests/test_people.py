@@ -1,7 +1,7 @@
 import unittest
 import os
 from data import Data
-from people import Staff, Fellow
+from people import Staff, Fellow, Person
 
 
 class PeopleTest(unittest.TestCase):
@@ -189,6 +189,26 @@ class PeopleTest(unittest.TestCase):
              '<new_room_name>': 'camelot'})
         self.assertEqual(
             'camelot is already fully occupied. Please try another room', unlucky_staff)
+
+    def test_unallocated_people(self):
+        """
+        Get a list of all unallocated people printed on the screen
+        and in a text file
+        """
+        self.data.create_office_spaces(['midgar'])
+        self.data.create_living_spaces(['woodwing'])
+
+        self.data.create_fellow("John", "Kariuki", "y")
+        self.data.create_fellow("Blue", "October", "y")
+        self.data.create_fellow("Blue", "October", "n")
+
+        self.data.create_staff("John", "Kariuki")
+        self.data.create_staff("Blue", "October")
+
+        people = Person()
+        people.unallocated({'--o': 'y'})
+        self.assertTrue(os.path.exists('unallocated.txt'))
+        os.remove('unallocated.txt')
 
     def tearDown(self):
         """Delete the test database"""

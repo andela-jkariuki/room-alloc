@@ -182,7 +182,6 @@ class OfficeSpace(Rooms):
         if room:
             return self.rooms.db.select(
                 "SELECT * FROM staff WHERE room_id = %d" % (room[0]))
-        return False
 
     def allocate_room(self, staff_id, room_id):
         """Allocate an office space to a staff member
@@ -198,7 +197,6 @@ class OfficeSpace(Rooms):
 
         if self.rooms.db.update(update_room):
             return True
-        return False
 
 
 class LivingSpace(Rooms):
@@ -247,7 +245,6 @@ class LivingSpace(Rooms):
         room = self.living_space(room_id)
         if room:
             return self.rooms.db.select("SELECT * FROM fellows WHERE room_id = %d" % (room[0]))
-        return False
 
     def allocate_room(self, fellow_id, room_id):
         """Allocate a living space to a fellow
@@ -263,4 +260,3 @@ class LivingSpace(Rooms):
 
         if self.rooms.db.update(update_room):
             return True
-        return False
