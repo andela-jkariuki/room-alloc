@@ -47,6 +47,17 @@ $ pip list
 
 ## Usage
 
+To get the app running, run the entry script file with an `-i` or `--interactive` option
+
+```bash
+$ python amity.py -i
+```
+
+or
+```bash
+$ python amity.py --interactive
+```
+
 **1. Create Rooms**
 
 To create a living or office space, follow the following docopt pattern
@@ -106,7 +117,7 @@ Reallocate a staff with id 10 from midgar to camelot
 reallocate_person staff 10 camelot
 ```
 
-**4. Print Stuff**
+**4. Print out data**
 
 The print methods allow you to print out room allocations for all rooms, one room or list of unallocated people.
 You can also specify an optional `--o` parameter to write the data to a file.
@@ -130,6 +141,19 @@ Print out a list of the allocations of a particular room at amity
 ```bash
 print_room camelot --o=y
 ```
+
+**5. Load people from file**
+
+Adds people to rooms from a txt file
+```bash
+load_people
+```
+**6. I Quit!**
+To exit from the application, simply type `quit` on yout room-alloc app
+```bash
+quit
+```
+
 
 ## Contributing
 
