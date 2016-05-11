@@ -76,7 +76,7 @@ class Amity (cmd.Cmd):
             print(fellow.add_fellow(args))
         else:
             staff = Staff()
-            staff.add_staff(args)
+            print(staff.add_staff(args))
 
     @pass_opt
     def do_reallocate_person(self, args):
