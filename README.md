@@ -64,6 +64,31 @@ Creating office spaces
 create_rooms office camelot midgar
 ```
 
+**2. Add Person**
+
+You can either add a staff member or a fellow with the `add_person` command.
+A fellow can either opt in or out of the Amity accomodation plan.
+The docopt patter is as follows
+```bash
+Usage: add_person <first_name> <last_name> (fellow|staff) [--a=n]
+```
+
+Add a staff member
+```bash
+add_person Joshua Mwaniki staff
+```
+
+Add a fellow that opts in to the andela accommodation
+```bash
+add_person Amos Omondi fellow --a=y
+```
+
+
+Add a fellow that opts out of the andela accommodation
+```bash
+add_person Amos Omondi fellow
+```
+
 ## Contributing
 
 Contributions are **welcome** and will be fully **credited**.
