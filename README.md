@@ -89,6 +89,24 @@ Add a fellow that opts out of the andela accommodation
 add_person Amos Omondi fellow
 ```
 
+**3. Reallocate a person**
+
+You can reallocate a person from one space (living or office) to another using the following pattern
+```bash
+reallocate_person (fellow|staff) <person_identifier> <new_room_name>
+```
+
+Reallocate a fellow with id 1 from woodwing to bluewing
+
+```bash
+reallocate_person fellow 1 bluewing
+```
+Reallocate a staff with id 10 from midgar to camelot
+
+```bash
+reallocate_person staff 10 camelot
+```
+
 ## Contributing
 
 Contributions are **welcome** and will be fully **credited**.
