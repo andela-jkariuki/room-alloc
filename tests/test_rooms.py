@@ -103,7 +103,7 @@ class RoomTest(unittest.TestCase):
             invalid_room)
 
         self.data.create_living_spaces(['bluewing'])
-        empty_room = rooms.room_allocation(
+        rooms.room_allocation(
             {'--o': 'y', '<room_name>': 'bluewing'})
         with open('bluewing.txt') as f:
             lines = f.readlines()

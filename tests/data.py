@@ -1,9 +1,12 @@
 from rooms import Rooms
 from people import Fellow, Staff
 from db.dbManager import DBManager
+import os
 
 
 class Data:
+    """Class to populate tests with data"""
+
     db_name = 'test.db'
 
     def __init__(self):
@@ -44,3 +47,8 @@ class Data:
                      '<last_name>': last_name}
         staff = Staff()
         return staff.add_staff(arguments)
+
+    def clear_test_db(self):
+        """Clear the test database"""
+        if os.path.exists('room_alloc.db'):
+            os.remove('room_alloc.db')
