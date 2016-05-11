@@ -208,6 +208,11 @@ class PeopleTest(unittest.TestCase):
         people = Person()
         people.unallocated({'--o': 'y'})
         self.assertTrue(os.path.exists('unallocated.txt'))
+
+        with open('unallocated.txt') as f:
+            lines = f.readlines()
+            self.assertTrue('All staff have been assigned\n' in lines)
+            self.assertTrue('Blue October\t[N]' in lines)
         os.remove('unallocated.txt')
 
     def tearDown(self):
