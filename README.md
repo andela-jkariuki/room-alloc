@@ -47,6 +47,23 @@ $ pip list
 
 ## Usage
 
+**1. Create Rooms**
+
+To create a living or office space, follow the following docopt pattern
+```bash
+Usage: create_rooms (living|office) <room_name>...
+```
+
+Creating living spaces
+```bash
+create_rooms living woodwing bluewing redwing
+```
+
+Creating office spaces
+```bash
+create_rooms office camelot midgar
+```
+
 ## Contributing
 
 Contributions are **welcome** and will be fully **credited**.
