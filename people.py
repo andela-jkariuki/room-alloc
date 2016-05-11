@@ -178,7 +178,6 @@ class Staff(Person):
 
         if unallocated:
             return unallocated
-        return False
 
 
 class Fellow(Person):
@@ -317,4 +316,3 @@ class Fellow(Person):
 
         if unallocated:
             return unallocated
-        return False
