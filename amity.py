@@ -90,13 +90,13 @@ class Amity (cmd.Cmd):
     def do_print_allocations(self, args):
         """Usage: print_allocations [--o=allocations.txt]"""
         rooms = Rooms()
-        rooms.room_allocations(args)
+        print(rooms.room_allocations(args))
 
     @pass_opt
     def do_print_room(self, args):
         """Usage: print_room <room_name> [--o=y]"""
         rooms = Rooms()
-        rooms.room_allocation(args)
+        print(rooms.room_allocation(args))
 
     @pass_opt
     def do_print_unallocated(self, args):

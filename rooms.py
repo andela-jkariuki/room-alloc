@@ -116,8 +116,8 @@ class Rooms:
             room_type = "LIVING SPACE"
             occupants = living_space.living_space_occupancy(living[0])
         else:
-            print("No room exists in amity with that name. please try again")
-            return
+            return "No room exists in amity with that name. please try again"
+
         occupants = ", ".join([str(i[1]) for i in occupants])
         div = max([len(occupants), len(room_type)])
 

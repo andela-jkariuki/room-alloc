@@ -96,6 +96,20 @@ class RoomTest(unittest.TestCase):
             self.assertTrue('June Bag, Blue October' in lines)
         os.remove('midgar.txt')
 
+        invalid_room = rooms.room_allocation(
+            {'--o': 'y', '<room_name>': 'randomnam3'})
+        self.assertEqual(
+            'No room exists in amity with that name. please try again',
+            invalid_room)
+
+        self.data.create_living_spaces(['bluewing'])
+        empty_room = rooms.room_allocation(
+            {'--o': 'y', '<room_name>': 'bluewing'})
+        with open('bluewing.txt') as f:
+            lines = f.readlines()
+            self.assertTrue('bluewing has no occupants' in lines)
+        os.remove('bluewing.txt')
+
         rooms.room_allocation({'--o': 'y', '<room_name>': 'woodwing'})
         self.assertTrue(os.path.exists('woodwing.txt'))
         with open('woodwing.txt') as f:
