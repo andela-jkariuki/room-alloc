@@ -15,17 +15,27 @@ class PeopleTest(unittest.TestCase):
         Get a list of all unallocated people printed on the screen
         and in a text file
         """
+        people = Person()
+
         self.data.create_office_spaces(['midgar'])
         self.data.create_living_spaces(['woodwing'])
 
         self.data.create_fellow("John", "Kariuki", "y")
         self.data.create_fellow("Judas", "Iscariot", "y")
+
+        people.unallocated({'--o': 'y'})
+        self.assertTrue(os.path.exists('unallocated.txt'))
+
+        with open('unallocated.txt') as f:
+            lines = f.readlines()
+            self.assertTrue('All fellows have been assigned' in lines)
+        os.remove('unallocated.txt')
+
         self.data.create_fellow("Blue", "October", "n")
 
         self.data.create_staff("John", "Kariuki")
         self.data.create_staff("Blue", "October")
 
-        people = Person()
         people.unallocated({'--o': 'y'})
         self.assertTrue(os.path.exists('unallocated.txt'))
 
