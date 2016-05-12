@@ -145,8 +145,12 @@ class Staff(Person):
             "SELECT * FROM staff WHERE id = %d" % (staff_id))
 
         if staff:
-            old_room = self.person.db.select_one(
-                "SELECT * FROM rooms WHERE id = %d AND type='O'" % (staff[-1]))
+            if staff[-1] is not None:
+                old_room = self.person.db.select_one(
+                    "SELECT * FROM rooms WHERE id = %d AND type='O'" % (staff[-1]))
+            else:
+                old_room = [None, 'no prior office space']
+
             new_room_name = args['<new_room_name>']
 
             if old_room[1] != new_room_name:
@@ -263,9 +267,14 @@ class Fellow(Person):
         Returns:
                 Boolean     True if successful, otherwise False
         """
-        old_room = self.person.db.select_one(
-            "SELECT * FROM rooms WHERE id = %d AND type='L'" % (fellow[-1]))
+        if fellow[-1] is not None:
+            old_room = self.person.db.select_one(
+                "SELECT * FROM rooms WHERE id = %d AND type='L'" % (fellow[-1]))
+        else:
+            old_room = [None, 'no prior office space']
+
         new_room_name = args['<new_room_name>']
+
         if old_room[1] != new_room_name:
             living = LivingSpace()
             new_room = living.living_space(new_room_name)
