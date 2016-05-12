@@ -1,5 +1,10 @@
 # room-alloc
 
+[![Build Status](https://travis-ci.org/andela-jkariuki/room-alloc.svg?branch=develop)](https://travis-ci.org/andela-jkariuki/room-alloc)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andela-jkariuki/room-alloc/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/andela-jkariuki/room-alloc/?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/andela-jkariuki/room-alloc/badge.svg?branch=develop)](https://coveralls.io/github/andela-jkariuki/room-alloc?branch=develop)
+[![Software License][ico-license]](https://github.com/andela-jkariuki/room-alloc)
+
 ```
 room-alloc is Room allocation system for Amity, an Andela facility in Nigeria.
 ```
@@ -192,3 +197,5 @@ Copyright (c) 2016 John kariuki <john.kariuki@andela.com>
 > LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 > OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 > THE SOFTWARE.
+
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
