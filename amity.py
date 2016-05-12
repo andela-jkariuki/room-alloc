@@ -58,8 +58,9 @@ def pass_opt(func):
 
 
 class Amity (cmd.Cmd):
-    intro = 'Welcome to my interactive program!' \
-        + ' (type help for a list of commands.)'
+    intro = """Welcome to my Amity!
+    (type help for a list of commands.)"""
+
     prompt = '(room_loc) '
     file = None
 
