@@ -95,11 +95,18 @@ class PeopleTest(unittest.TestCase):
         fellow = Fellow()
         self.data.create_fellow("Penny", "Wanjiru", "y")
 
+        lucky_fellow = fellow.reallocate(
+            {'fellow': True, 'staff': False, '<person_identifier>': 5,
+             '<new_room_name>': 'bluewing'})
+        self.assertEqual(
+            'Amos Omondi is now residing in bluewing', lucky_fellow)
+
         unlucky_fellow = fellow.reallocate(
             {'fellow': True, 'staff': False, '<person_identifier>': 6,
              '<new_room_name>': 'woodwing'})
         self.assertEqual(
-            'woodwing is already fully occupied. Please try another room', unlucky_fellow)
+            'woodwing is already fully occupied. Please try another room',
+            unlucky_fellow)
 
     def test_allocate_new_fellow(self):
         """Test allocate new fellow method

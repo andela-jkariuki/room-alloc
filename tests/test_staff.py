@@ -93,6 +93,11 @@ class PeopleTest(unittest.TestCase):
         staff = Staff()
         self.data.create_staff("Penny", "Wanjiru")
 
+        lucky_staff = staff.reallocate(
+            {'fellow': True, 'staff': False, '<person_identifier>': 7,
+             '<new_room_name>': 'midgar'})
+        self.assertEqual('Amos Omondi is now residing in midgar', lucky_staff)
+
         unlucky_staff = staff.reallocate(
             {'fellow': True, 'staff': False, '<person_identifier>': 8,
              '<new_room_name>': 'camelot'})
