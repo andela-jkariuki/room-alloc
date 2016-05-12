@@ -79,10 +79,10 @@ class Person:
                     staff.append(staff_member)
 
             for i in range(len(fellows)):
-                Fellow().add_fellow(fellows[i])
+                print(Fellow().add_fellow(fellows[i]))
 
             for j in range(len(staff)):
-                Staff().add_staff(staff[j])
+                 print(Staff().add_staff(staff[j]))
 
 
 class Staff(Person):
