@@ -159,6 +159,7 @@ To exit from the application, simply type `quit` on yout room-alloc app
 quit
 ```
 
+You can get out of the Virtual environment by simply typing `deactivate` on your commandline
 
 ## Contributing
 
