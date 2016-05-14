@@ -77,7 +77,7 @@ create_rooms living woodwing bluewing redwing
 
 Creating office spaces
 ```bash
-create_rooms office camelot midgar
+create_rooms office camelot midgar mordor
 ```
 
 **2. Add Person**
