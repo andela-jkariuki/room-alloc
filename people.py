@@ -49,7 +49,7 @@ class Person:
                 print("Unallocated people printed out to %s" %
                       ('unallocated.txt'))
 
-    def allocate_from_file(self, args):# pragma: no cover
+    def allocate_from_file(self, args):  # pragma: no cover
         """Allocate rooms to users from a file"""
         file = tk.askopenfile(
             mode='rt', title='Load list of people to allocate rooms')
@@ -82,7 +82,7 @@ class Person:
                 print(Fellow().add_fellow(fellows[i]))
 
             for j in range(len(staff)):
-                 print(Staff().add_staff(staff[j]))
+                print(Staff().add_staff(staff[j]))
 
 
 class Staff(Person):
