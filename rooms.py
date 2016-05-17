@@ -168,6 +168,28 @@ class Rooms:
         if self.rooms.db.update(update_room):
             return True
 
+    def occupancy(self, space_type, room_id):
+        """
+        Get the details of a living space or office space
+
+        Arguments:
+                space_type  The type of space [living or office]
+                room_id     The unique Id for the room
+        Returns:
+            list    Records of the people allocated to the room
+        """
+        if space_type == "living":
+            room = self.living_space(room_id)
+            if room:
+                return self.rooms.db.select("""SELECT * FROM fellows
+                    WHERE room_id = %d""" % (room[0]))
+        elif space_type == "office":
+            room = self.office_space(room_id)
+            if room:
+                return self.rooms.db.select(
+                    """SELECT * FROM staff
+                    WHERE room_id = %d""" % (room[0]))
+
 
 class OfficeSpace(Rooms):
     """Class OfficeSpace contains the characteristics and behaviors of the
@@ -211,20 +233,6 @@ class OfficeSpace(Rooms):
             return office
         return False
 
-    def office_space_occupancy(self, office_id):
-        """
-        Get the details of an office space
-
-        Arguments:
-                office_id The unique Id for the room
-        Returns:
-            list      Records of the staff occupying the office
-        """
-        room = self.office_space(office_id)
-        if room:
-            return self.rooms.db.select(
-                "SELECT * FROM staff WHERE room_id = %d" % (room[0]))
-
 
 class LivingSpace(Rooms):
     """Class LivingSpace contains the characteristics and behaviors of the
@@ -265,17 +273,3 @@ class LivingSpace(Rooms):
         if room:
             return room
         return False
-
-    def living_space_occupancy(self, room_id):
-        """
-        Get the details of a living space
-
-        Arguments:
-                room_id The unique Id for the room
-        Returns:
-            list    Records of the fellows accoomodated in a room
-        """
-        room = self.living_space(room_id)
-        if room:
-            return self.rooms.db.select("""SELECT * FROM fellows
-                WHERE room_id = %d""" % (room[0]))

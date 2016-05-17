@@ -85,8 +85,10 @@ class Person:
                 print(Staff().add_staff(staff[j]))
 
     def unallocated_people(self, person_type):
-        """Get a list of unallocated fellow
-
+        """Get a list of unallocated people (fellows or staff)
+        Arguments:
+                person_type     type of unallocated people to get
+                                (fellow or staff)
         Returns:
                 List of unallocated fellows or False
         """
@@ -162,7 +164,8 @@ class Staff(Person):
         if staff:
             if staff[-1] is not None:
                 old_room = self.person.db.select_one(
-                    "SELECT * FROM rooms WHERE id = %d AND type='O'" % (staff[-1]))
+                    """SELECT * FROM rooms
+                    WHERE id = %d AND type='O'""" % (staff[-1]))
             else:
                 old_room = [None, 'no prior office space']
 
@@ -170,12 +173,10 @@ class Staff(Person):
 
             if old_room[1] != new_room_name:
                 office = OfficeSpace()
-                room = Rooms()
-
                 new_room = office.office_space(new_room_name)
 
                 if new_room:
-                    room_occupancy = office.office_space_occupancy(new_room[0])
+                    room_occupancy = office.occupancy("office", new_room[0])
                     if len(room_occupancy) < office.room_space:
                         if office.allocate_room("staff", staff_id, new_room[0]):
                             return "%s is now residing in %s" % (staff[1], new_room_name)
@@ -201,9 +202,9 @@ class Fellow(Person):
     def add_fellow(self, args):
         """Add a new fellow to the system"""
         self.person.set_name(args['<first_name>'], args['<last_name>'])
-        self.accomodation = 'Y' if args[
-            '--a'] is not None and args['--a'].lower() == 'y' else 'N'
-        new_fellow_query = "INSERT INTO fellows(name, accomodation) VALUES('{name}', '{accomodation}')".format(
+        self.accomodation = 'Y' if args['--a'] is not None and args['--a'].lower() == 'y' else 'N'
+        new_fellow_query = """INSERT INTO fellows(name, accomodation)
+        VALUES('{name}', '{accomodation}')""".format(
             name=self.person.name, accomodation=self.accomodation)
 
         fellow_id = self.person.db.insert(new_fellow_query)
@@ -284,7 +285,7 @@ class Fellow(Person):
             living = LivingSpace()
             new_room = living.living_space(new_room_name)
             if new_room:
-                room_occupancy = living.living_space_occupancy(new_room[0])
+                room_occupancy = living.occupancy("living", new_room[0])
                 if len(room_occupancy) < living.room_space:
                     if living.allocate_room("fellow", fellow_id, new_room[0]):
                         return "%s is now residing in %s" % (fellow[1], new_room_name)
@@ -310,7 +311,7 @@ class Fellow(Person):
         living = LivingSpace()
         new_room = living.living_space(new_room_name)
         if new_room:
-            room_occupancy = living.living_space_occupancy(new_room[0])
+            room_occupancy = living.occupancy("living", new_room[0])
             if len(room_occupancy) < living.room_space:
                 if living.allocate_room("fellow", fellow_id, new_room[0]):
                     return "%s is now residing in %s" % (fellow[1], new_room_name)
