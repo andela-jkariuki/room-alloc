@@ -26,6 +26,11 @@ class Rooms:
         room_list = tuple((room, room_type) for room in args['<room_name>'])
 
         if self.db.run_many_queries("INSERT INTO rooms(name, type) VALUES (?, ?)", room_list):
+            print("-" * 15)
+            print("New rooms")
+            print("-" * 15)
+            print("\n".join(args['<room_name>']))
+            print("-" * 15)
             return 'New rooms succesfully created'
         else:
             return 'Duplicate entries: A room already exist with provided name'
