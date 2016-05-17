@@ -25,12 +25,8 @@ class Rooms:
         room_type = 'L' if args['living'] else 'O'
         room_list = tuple((room, room_type) for room in args['<room_name>'])
 
-        if self.db.run_many_queries("INSERT INTO rooms(name, type) VALUES (?, ?)", room_list):
-            print("-" * 15)
-            print("New rooms")
-            print("-" * 15)
-            print("\n".join(args['<room_name>']))
-            print("-" * 15)
+        if self.db.run_many_queries("""INSERT INTO rooms(name, type)
+             VALUES (?, ?)""", room_list):
             return 'New rooms succesfully created'
         else:
             return 'Duplicate entries: A room already exist with provided name'
@@ -42,10 +38,16 @@ class Rooms:
                 args (dict) Filename to print out the output (optional)
         """
         office_spaces = self.db.select(
-            "SELECT rooms.id, rooms.name, rooms.type, staff.name FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O'")
+            """SELECT rooms.id, rooms.name, rooms.type, staff.name
+            FROM rooms
+            LEFT JOIN staff ON rooms.id = staff.room_id
+            WHERE rooms.type='O'""")
 
         living_spaces = self.db.select(
-            "SELECT rooms.id, rooms.name, rooms.type, fellows.name FROM rooms LEFT JOIN fellows ON rooms.id = fellows.room_id WHERE rooms.type='L'")
+            """SELECT rooms.id, rooms.name, rooms.type, fellows.name
+            FROM rooms
+            LEFT JOIN fellows ON rooms.id = fellows.room_id
+            WHERE rooms.type='L'""")
 
         office_space_allocations = {}
         living_space_allocations = {}
@@ -142,6 +144,30 @@ class Rooms:
                 print("%s occupants printed out to %s" %
                       (room_name, room_name + ".txt"))
 
+    def allocate_room(self, person_type, person_id, room_id):
+        """Allocate a living space to a fellow
+
+        Arguments:
+                person_type     Type of person to allocate room
+                                (fellow or staff)
+                fellow_id       Unique ID of the fellow or Staff member
+                room_id         Unique ID of the room space to be allocated
+
+        Returns:
+                Boolean  True if updated, otherwise False
+        """
+        if person_type == "fellow":
+            update_room = """UPDATE fellows
+            SET room_id = %d, accomodation = 'Y'
+            WHERE id = %d""" % (room_id, person_id)
+        elif person_type == "staff":
+            update_room = """UPDATE staff
+            SET room_id = %d
+            WHERE id = %d""" % (room_id, person_id)
+
+        if self.rooms.db.update(update_room):
+            return True
+
 
 class OfficeSpace(Rooms):
     """Class OfficeSpace contains the characteristics and behaviors of the
@@ -157,7 +183,11 @@ class OfficeSpace(Rooms):
         """Return a list of office spaces with a vacancy"""
 
         office_space = self.rooms.db.select(
-            "SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN staff ON rooms.id = staff.room_id WHERE rooms.type='O' GROUP BY rooms.id")
+            """SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants
+            FROM rooms
+            LEFT JOIN staff ON rooms.id = staff.room_id
+            WHERE rooms.type='O' GROUP BY rooms.id""")
+
         return office_space
 
     def office_space(self, office_id):
@@ -195,22 +225,6 @@ class OfficeSpace(Rooms):
             return self.rooms.db.select(
                 "SELECT * FROM staff WHERE room_id = %d" % (room[0]))
 
-    def allocate_room(self, staff_id, room_id):
-        """Allocate an office space to a staff member
-
-        Arguments:
-                staff_id  The unique ID of the staff member
-                room_id   The uniquer ID of the office space to be allocated
-
-        Returns:
-            Boolean   True if updated, otherwise False
-        """
-        update_room = "UPDATE staff SET room_id = %d WHERE id = %d" % (
-            room_id, staff_id)
-
-        if self.rooms.db.update(update_room):
-            return True
-
 
 class LivingSpace(Rooms):
     """Class LivingSpace contains the characteristics and behaviors of the
@@ -226,7 +240,10 @@ class LivingSpace(Rooms):
         """View a list of rooms with at least one vacancy"""
 
         living_spaces = self.rooms.db.select(
-            "SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants FROM rooms LEFT JOIN fellows ON rooms.id = fellows.room_id WHERE rooms.type='L' GROUP BY rooms.id")
+            """SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants
+            FROM rooms
+            LEFT JOIN fellows ON rooms.id = fellows.room_id
+            WHERE rooms.type='L' GROUP BY rooms.id""")
         return living_spaces
 
     def living_space(self, room_id):
@@ -260,20 +277,5 @@ class LivingSpace(Rooms):
         """
         room = self.living_space(room_id)
         if room:
-            return self.rooms.db.select("SELECT * FROM fellows WHERE room_id = %d" % (room[0]))
-
-    def allocate_room(self, fellow_id, room_id):
-        """Allocate a living space to a fellow
-
-        Arguments:
-                fellow_id  The unique ID of the fellow
-                room_id    The uniquer ID of the living space to be accomodated
-
-        Returns:
-                Boolean  True if updated, otherwise False
-        """
-        update_room = "UPDATE fellows SET room_id = %d, accomodation = 'Y' WHERE id = %d" % (
-            room_id, fellow_id)
-
-        if self.rooms.db.update(update_room):
-            return True
+            return self.rooms.db.select("""SELECT * FROM fellows
+                WHERE room_id = %d""" % (room[0]))

@@ -25,8 +25,8 @@ class Person:
 
     def unallocated(self, args):
         """Print out a list of all unallocated fellows and staff members"""
-        unallocated_fellows = Fellow().unallocated()
-        unallocated_staff = Staff().unallocated()
+        unallocated_fellows = Fellow().unallocated_people("fellow")
+        unallocated_staff = Staff().unallocated_people("staff")
 
         output = ''
         output += '*' * 30 + "\nSTAFF\n" + '*' * 30 + "\n"
@@ -83,6 +83,21 @@ class Person:
 
             for j in range(len(staff)):
                 print(Staff().add_staff(staff[j]))
+
+    def unallocated_people(self, person_type):
+        """Get a list of unallocated fellow
+
+        Returns:
+                List of unallocated fellows or False
+        """
+        if person_type == "fellow":
+            unallocated = self.person.db.select("""SELECT * FROM fellows
+                WHERE room_id is NULL or room_id = ''""")
+        elif person_type == "staff":
+            unallocated = self.person.db.select("""SELECT * FROM staff
+            WHERE room_id is NULL or room_id = ''""")
+        if unallocated:
+            return unallocated
 
 
 class Staff(Person):
@@ -155,12 +170,14 @@ class Staff(Person):
 
             if old_room[1] != new_room_name:
                 office = OfficeSpace()
+                room = Rooms()
+
                 new_room = office.office_space(new_room_name)
 
                 if new_room:
                     room_occupancy = office.office_space_occupancy(new_room[0])
                     if len(room_occupancy) < office.room_space:
-                        if office.allocate_room(staff_id, new_room[0]):
+                        if office.allocate_room("staff", staff_id, new_room[0]):
                             return "%s is now residing in %s" % (staff[1], new_room_name)
                     else:
                         return "%s is already fully occupied. Please try another room" % (new_room_name)
@@ -170,18 +187,6 @@ class Staff(Person):
                 return "%s already belongs in %s" % (staff[1], new_room_name)
         else:
             return "No staff by the provided staff id %d" % staff_id
-
-    def unallocated(self):
-        """Get a list of unallocated staff members
-
-        Returns:
-                List of unallocated Staff members or False
-        """
-        unallocated = self.person.db.select(
-            "SELECT * FROM staff WHERE room_id is NULL or room_id = ''")
-
-        if unallocated:
-            return unallocated
 
 
 class Fellow(Person):
@@ -281,7 +286,7 @@ class Fellow(Person):
             if new_room:
                 room_occupancy = living.living_space_occupancy(new_room[0])
                 if len(room_occupancy) < living.room_space:
-                    if living.allocate_room(fellow_id, new_room[0]):
+                    if living.allocate_room("fellow", fellow_id, new_room[0]):
                         return "%s is now residing in %s" % (fellow[1], new_room_name)
                 else:
                     return "%s is already fully occupied. Please try another room" % (new_room_name)
@@ -307,21 +312,9 @@ class Fellow(Person):
         if new_room:
             room_occupancy = living.living_space_occupancy(new_room[0])
             if len(room_occupancy) < living.room_space:
-                if living.allocate_room(fellow_id, new_room[0]):
+                if living.allocate_room("fellow", fellow_id, new_room[0]):
                     return "%s is now residing in %s" % (fellow[1], new_room_name)
             else:
                 return "%s is already fully occupied. Please try another room" % (new_room_name)
         else:
             return "No living space by that name. Please try again"
-
-    def unallocated(self):
-        """Get a list of unallocated fellow
-
-        Returns:
-                List of unallocated fellows or False
-        """
-        unallocated = self.person.db.select(
-            "SELECT * FROM  fellows WHERE room_id is NULL or room_id = ''")
-
-        if unallocated:
-            return unallocated
