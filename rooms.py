@@ -68,13 +68,18 @@ class Rooms:
                 living_space_allocations[room_name].append(staff[-1])
 
         try:
-            office_space = [
-                len(", ".join(i)) for i in office_space_allocations.values() if i[0] is not None]
-            living_space = [
-                len(", ".join(i)) for i in living_space_allocations.values() if i[0] is not None]
+            office_space = [len(", ".join(i)) for i
+                            in office_space_allocations.values()
+                            if i[0] is not None]
 
-            div = max(max(office_space), max(living_space),
-                      len('OFFICE SPACES'), len('LIVING SPACES'))
+            living_space = [len(", ".join(i)) for i
+                            in living_space_allocations.values()
+                            if i[0] is not None]
+
+            div = max(max(office_space),
+                      max(living_space),
+                      len('OFFICE SPACES'),
+                      len('LIVING SPACES'))
         except ValueError:
             div = 30
 
@@ -112,17 +117,17 @@ class Rooms:
                             File name to print out room allocation(optional)
         """
         room_name = args['<room_name>']
-        office_space = OfficeSpace()
-        office = office_space.office_space(room_name)
-        living_space = LivingSpace()
-        living = living_space.living_space(room_name)
+
+        rooms = Rooms()
+        office = rooms.space("O", room_name)
+        living = rooms.space("L", room_name)
 
         if office:
             room_type = "OFFICE SPACE"
-            occupants = office_space.occupancy("office", office[0])
+            occupants = rooms.occupancy("office", office[0])
         elif living:
             room_type = "LIVING SPACE"
-            occupants = living_space.occupancy("living", living[0])
+            occupants = rooms.occupancy("living", living[0])
         else:
             return "No room exists in amity with that name. please try again"
 
@@ -180,20 +185,20 @@ class Rooms:
             list    Records of the people allocated to the room
         """
         if space_type == "living":
-            room = self.living_space(room_id)
+            room = self.space("L", room_id)
             if room:
-                return self.rooms.db.select("""SELECT * FROM fellows
+                return self.db.select("""SELECT * FROM fellows
                     WHERE room_id = %d""" % (room[0]))
         elif space_type == "office":
-            room = self.office_space(room_id)
+            room = self.space("O", room_id)
             if room:
-                return self.rooms.db.select(
+                return self.db.select(
                     """SELECT * FROM staff
                     WHERE room_id = %d""" % (room[0]))
 
     def vacancies(self, space_type):
         if space_type == "living":
-            return self.rooms.db.select(
+            return self.db.select(
                 """SELECT rooms.id, rooms.name, rooms.type,
                 COUNT(*) AS occupants
                 FROM rooms
@@ -201,13 +206,33 @@ class Rooms:
                 WHERE rooms.type='L' GROUP BY rooms.id
                 HAVING occupants < %d """ % (LivingSpace.room_space))
         elif space_type == "office":
-            return self.rooms.db.select(
+            return self.db.select(
                 """SELECT rooms.id, rooms.name, rooms.type,
                 COUNT(*) AS occupants
                 FROM rooms
                 LEFT JOIN staff ON rooms.id = staff.room_id
                 WHERE rooms.type='O' GROUP BY rooms.id
                 HAVING occupants < %d """ % (OfficeSpace.room_space))
+
+    def space(self, space_type, room_id):
+        """
+        Get the details of a living space
+
+        Arguments:
+                room_id The unique Id for the living space
+        Returns:
+            List    Record of a living space
+        """
+        if isinstance(room_id, str):
+            query = "SELECT * FROM rooms WHERE name = '%s' AND type='%s'" % (
+                room_id, space_type)
+        elif isinstance(room_id, int):
+            query = "SELECT * FROM rooms where id = %d AND type='%s'" % (
+                room_id, space_type)
+        room = self.db.select_one(query)
+        if room:
+            return room
+        return False
 
 
 class OfficeSpace(Rooms):
@@ -219,27 +244,7 @@ class OfficeSpace(Rooms):
     def __init__(self):
         """Create instance of the database"""
         self.rooms = Rooms()
-
-    def office_space(self, office_id):
-        """
-        Get the details of an office space
-
-        Arguments:
-                office_id  The unique Id for the room
-
-        Returns:
-                List       The office space record in the database
-        """
-        if isinstance(office_id, str):
-            query = "SELECT * FROM rooms WHERE name = '%s' AND type='O'" % (
-                office_id)
-        elif isinstance(office_id, int):
-            query = "SELECT * FROM rooms where id = %d AND type='O'" % (
-                office_id)
-        office = self.rooms.db.select_one(query)
-        if office:
-            return office
-        return False
+        self.db = DBManager()
 
 
 class LivingSpace(Rooms):
@@ -249,23 +254,4 @@ class LivingSpace(Rooms):
     def __init__(self):
         """Create instance of the database"""
         self.rooms = Rooms()
-
-    def living_space(self, room_id):
-        """
-        Get the details of a living space
-
-        Arguments:
-                room_id The unique Id for the living space
-        Returns:
-            List    Record of a living space
-        """
-        if isinstance(room_id, str):
-            query = "SELECT * FROM rooms WHERE name = '%s' AND type='L'" % (
-                room_id)
-        elif isinstance(room_id, int):
-            query = "SELECT * FROM rooms where id = %d AND type='L'" % (
-                room_id)
-        room = self.rooms.db.select_one(query)
-        if room:
-            return room
-        return False
+        self.db = DBManager()
