@@ -3,7 +3,7 @@
 import random
 import tkFileDialog as tk
 from db.dbManager import DBManager
-from rooms import LivingSpace, OfficeSpace
+from rooms import LivingSpace, OfficeSpace, Rooms
 
 
 class Person:
@@ -171,7 +171,7 @@ class Staff(Person):
 
             if old_room[1] != new_room_name:
                 office = OfficeSpace()
-                new_room = office.office_space(new_room_name)
+                new_room = office.space("O", new_room_name)
 
                 if new_room:
                     room_occupancy = office.occupancy("office", new_room[0])
@@ -223,7 +223,7 @@ class Fellow(Person):
     def accomodate_fellow(self, fellow_id):
         """Accomodate a new fellow in the living spaces"""
 
-        vacant_living_spaces = LivingSpace().vacancies("living")
+        vacant_living_spaces = Rooms().vacancies("living")
 
         if len(vacant_living_spaces) != 0:
             living_space = random.choice(vacant_living_spaces)
@@ -290,7 +290,7 @@ class Fellow(Person):
 
         if old_room[1] != new_room_name:
             living = LivingSpace()
-            new_room = living.living_space(new_room_name)
+            new_room = living.space("L", new_room_name)
             if new_room:
                 room_occupancy = living.occupancy("living", new_room[0])
                 if len(room_occupancy) < living.room_space:
@@ -317,7 +317,7 @@ class Fellow(Person):
         """
         new_room_name = args['<new_room_name>']
         living = LivingSpace()
-        new_room = living.living_space(new_room_name)
+        new_room = living.space("L", new_room_name)
         if new_room:
             room_occupancy = living.occupancy("living", new_room[0])
             if len(room_occupancy) < living.room_space:
