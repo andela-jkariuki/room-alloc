@@ -7,6 +7,7 @@ from itertools import groupby
 class Rooms:
     """Rooms class to handle behaviors common to both Offices and Living Spaces
     """
+    room_space = 4
 
     def __init__(self):
         """Create instance of the database"""
@@ -118,10 +119,10 @@ class Rooms:
 
         if office:
             room_type = "OFFICE SPACE"
-            occupants = office_space.office_space_occupancy(office[0])
+            occupants = office_space.occupancy("office", office[0])
         elif living:
             room_type = "LIVING SPACE"
-            occupants = living_space.living_space_occupancy(living[0])
+            occupants = living_space.occupancy("living", living[0])
         else:
             return "No room exists in amity with that name. please try again"
 

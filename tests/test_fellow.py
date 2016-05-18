@@ -71,7 +71,7 @@ class PeopleTest(unittest.TestCase):
         self.data.create_fellow("John", "Kariuki", "n")
 
         fellow = Fellow()
-        unallocated_fellows = fellow.unallocated()
+        unallocated_fellows = fellow.unallocated_people("fellow")
         self.assertEquals(2, len(unallocated_fellows))
 
     def test_no_vacancies_in_living_spaces(self):

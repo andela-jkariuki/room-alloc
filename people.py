@@ -223,9 +223,8 @@ class Fellow(Person):
     def accomodate_fellow(self, fellow_id):
         """Accomodate a new fellow in the living spaces"""
 
-        vacant_living_spaces = LivingSpace().living_spaces()
-        vacant_living_spaces = [
-            i for i in vacant_living_spaces if i[-1] < LivingSpace.room_space]
+        vacant_living_spaces = LivingSpace().vacancies("living")
+
         if len(vacant_living_spaces) != 0:
             living_space = random.choice(vacant_living_spaces)
             query = """UPDATE fellows
