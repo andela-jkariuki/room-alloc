@@ -67,7 +67,7 @@ class PeopleTest(unittest.TestCase):
         self.data.create_staff('Steph', 'Curry')
 
         staff = Staff()
-        unallocated_staff = staff.unallocated()
+        unallocated_staff = staff.unallocated_people("staff")
         self.assertEquals(3, len(unallocated_staff))
 
     def test_no_vacancies_in_office_spaces(self):
