@@ -177,7 +177,8 @@ class Staff(Person):
                     room_occupancy = office.occupancy("office", new_room[0])
                     if len(room_occupancy) < office.room_space:
                         if office.allocate_room("staff", staff_id, new_room[0]):
-                            return "%s is now residing in %s" % (staff[1], new_room_name)
+                            return "%s is now residing in %s" % (
+                                staff[1], new_room_name)
                     else:
                         return "%s is already fully occupied. Please try another room" % (new_room_name)
                 else:
@@ -200,12 +201,15 @@ class Fellow(Person):
     def add_fellow(self, args):
         """Add a new fellow to the system"""
         self.person.set_name(args['<first_name>'], args['<last_name>'])
-        self.accomodation = 'Y' if args['--a'] is not None and args['--a'].lower() == 'y' else 'N'
-        new_fellow_query = """INSERT INTO fellows(name, accomodation)
-        VALUES('{name}', '{accomodation}')""".format(
-            name=self.person.name, accomodation=self.accomodation)
 
-        fellow_id = self.person.db.insert(new_fellow_query)
+        self.accomodation = 'Y' if args['--a'] is not None\
+                            and args['--a'].lower() == 'y' else 'N'
+
+        fellow_id = self.person.db.insert(
+            """INSERT INTO fellows(name, accomodation)
+            VALUES('{name}', '{accomodation}')""".format(
+                name=self.person.name,
+                accomodation=self.accomodation))
 
         if fellow_id:
             print("%s succesfully added. Fellow ID is %d" %
@@ -224,8 +228,10 @@ class Fellow(Person):
             i for i in vacant_living_spaces if i[-1] < LivingSpace.room_space]
         if len(vacant_living_spaces) != 0:
             living_space = random.choice(vacant_living_spaces)
-            query = "UPDATE fellows SET room_id = %d WHERE id = %d" % (
+            query = """UPDATE fellows
+            SET room_id = %d WHERE id = %d""" % (
                 living_space[0], fellow_id)
+
             if self.person.db.update(query):
                 print("{} is now accommodated in {}".format(
                     self.person.name, living_space[1]))
@@ -249,7 +255,10 @@ class Fellow(Person):
         if fellow:
             if fellow[2] == 'N':
                 accommodate = raw_input(
-                    "%s has opted out of amity accomodation.Would you like to proceed and accomodate the fellow? [y/n]" % (fellow[1]))
+                    """%s has opted out of amity accomodation.
+                    Would you like to accomodate the fellow?[y/n]"""
+                    % (fellow[1]))
+
                 if accommodate.upper() == 'Y':
                     self.allocate_new_fellow(fellow, fellow_id, args)
                 else:
@@ -273,7 +282,8 @@ class Fellow(Person):
         """
         if fellow[-1] is not None:
             old_room = self.person.db.select_one(
-                "SELECT * FROM rooms WHERE id = %d AND type='L'" % (fellow[-1]))
+                """SELECT * FROM rooms
+                WHERE id = %d AND type='L'""" % (fellow[-1]))
         else:
             old_room = [None, 'no prior office space']
 
@@ -286,7 +296,8 @@ class Fellow(Person):
                 room_occupancy = living.occupancy("living", new_room[0])
                 if len(room_occupancy) < living.room_space:
                     if living.allocate_room("fellow", fellow_id, new_room[0]):
-                        return "%s is now residing in %s" % (fellow[1], new_room_name)
+                        return "%s is now residing in %s" % (
+                            fellow[1], new_room_name)
                 else:
                     return "%s is already fully occupied. Please try another room" % (new_room_name)
             else:
@@ -312,7 +323,8 @@ class Fellow(Person):
             room_occupancy = living.occupancy("living", new_room[0])
             if len(room_occupancy) < living.room_space:
                 if living.allocate_room("fellow", fellow_id, new_room[0]):
-                    return "%s is now residing in %s" % (fellow[1], new_room_name)
+                    return "%s is now residing in %s" % (
+                        fellow[1], new_room_name)
             else:
                 return "%s is already fully occupied. Please try another room" % (new_room_name)
         else:
