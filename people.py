@@ -126,23 +126,22 @@ class Staff(Person):
             new_staff = """INSERT INTO staff(name, room_id)
             VALUES ('%s', %d)""" % (self.person.name, office_space[0])
 
-            staff_id = self.person.db.insert(new_staff)
-
-            if staff_id:
-                print("%s succesfully added. Staff ID is %d" %
-                      (self.person.name, staff_id))
-                print("%s's office space is in %s." %
-                      (self.person.name, office_space[1]))
-                return True
         else:
             new_staff = """INSERT INTO staff(name, room_id)
             VALUES ('%s', NULL)""" % (self.person.name)
-            staff_id = self.person.db.insert(new_staff)
 
-            if staff_id:
-                print("%s succesfully added. Staff ID is %d" %
-                      (self.person.name, staff_id))
-                return "There are no vacant office spaces. Please check in later to allocate %s" % (
+        staff_id = self.person.db.insert(new_staff)
+
+        if staff_id:
+            print("%s succesfully added. Staff ID is %d" %
+                  (self.person.name, staff_id))
+
+            if len(office_spaces) != 0:
+                print("%s's office space is in %s." %
+                      (self.person.name, office_space[1]))
+                return True
+
+            return "There are no vacant office spaces. Please check in later to allocate %s" % (
                     self.person.name)
 
     def reallocate(self, args):
@@ -180,7 +179,7 @@ class Staff(Person):
                             return "%s is now residing in %s" % (
                                 staff[1], new_room_name)
                     else:
-                        return "%s is already fully occupied. Please try another room" % (new_room_name)
+                        return "%s is fully occupied." % (new_room_name)
                 else:
                     return "No office space by that name. Please try again"
             else:
@@ -236,7 +235,7 @@ class Fellow(Person):
                     self.person.name, living_space[1]))
                 return True
         else:
-            return "There are no vacant living spaces for now. Please check in later to accommodate %s" % (
+            return "No vacant living spaces. Check later to accommodate %s" % (
                 self.person.name)
 
     def reallocate(self, args):
@@ -254,9 +253,7 @@ class Fellow(Person):
         if fellow:
             if fellow[2] == 'N':
                 accommodate = raw_input(
-                    """%s has opted out of amity accomodation.
-                    Would you like to accomodate the fellow?[y/n]"""
-                    % (fellow[1]))
+                    """%s has opted out of amity accomodation. Would you like to accomodate the fellow?[y/n]""" % (fellow[1]))
 
                 if accommodate.upper() == 'Y':
                     self.allocate_new_fellow(fellow, fellow_id, args)
@@ -298,7 +295,7 @@ class Fellow(Person):
                         return "%s is now residing in %s" % (
                             fellow[1], new_room_name)
                 else:
-                    return "%s is already fully occupied. Please try another room" % (new_room_name)
+                    return "%s is fully occupied." % (new_room_name)
             else:
                 return "No living space by that name. Please try again"
         else:
@@ -325,6 +322,6 @@ class Fellow(Person):
                     return "%s is now residing in %s" % (
                         fellow[1], new_room_name)
             else:
-                return "%s is already fully occupied. Please try another room" % (new_room_name)
+                return "%s is fully occupied." % (new_room_name)
         else:
             return "No living space by that name. Please try again"

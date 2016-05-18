@@ -88,7 +88,8 @@ class PeopleTest(unittest.TestCase):
 
         unlucky_fellow = self.data.create_fellow("Amos", "Omondi", "y")
         self.assertEqual(
-            'There are no vacant living spaces for now. Please check in later to accommodate Amos Omondi', unlucky_fellow)
+            'No vacant living spaces. Check later to accommodate Amos Omondi',
+            unlucky_fellow)
 
         self.data.create_living_spaces(['bluewing'])
 
@@ -105,7 +106,7 @@ class PeopleTest(unittest.TestCase):
             {'fellow': True, 'staff': False, '<person_identifier>': 6,
              '<new_room_name>': 'woodwing'})
         self.assertEqual(
-            'woodwing is already fully occupied. Please try another room',
+            'woodwing is fully occupied.',
             unlucky_fellow)
 
     def test_allocate_new_fellow(self):
@@ -132,7 +133,7 @@ class PeopleTest(unittest.TestCase):
         full_space = fellow.allocate_new_fellow(
             (2, 'John Kariuki', 'N', None), 2, {'<new_room_name>': 'bluewing'})
         self.assertEqual(
-            "bluewing is already fully occupied. Please try another room",
+            "bluewing is fully occupied.",
             full_space)
 
     def tearDown(self):

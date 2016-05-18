@@ -102,7 +102,7 @@ class PeopleTest(unittest.TestCase):
             {'fellow': True, 'staff': False, '<person_identifier>': 8,
              '<new_room_name>': 'camelot'})
         self.assertEqual(
-            'camelot is already fully occupied. Please try another room', unlucky_staff)
+            'camelot is fully occupied.', unlucky_staff)
 
     def tearDown(self):
         """Delete the test database"""
