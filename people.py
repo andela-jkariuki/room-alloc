@@ -120,13 +120,11 @@ class Staff(Person):
         """
         self.person.set_name(args['<first_name>'], args['<last_name>'])
 
-        office_spaces = OfficeSpace().office_spaces()
-        office_spaces = [
-            i for i in office_spaces if i[-1] < OfficeSpace.room_space]
+        office_spaces = OfficeSpace().vacancies("office")
         if len(office_spaces) != 0:
             office_space = random.choice(office_spaces)
-            new_staff = "INSERT INTO staff(name, room_id) VALUES ('%s', %d)" % (
-                self.person.name, office_space[0])
+            new_staff = """INSERT INTO staff(name, room_id)
+            VALUES ('%s', %d)""" % (self.person.name, office_space[0])
 
             staff_id = self.person.db.insert(new_staff)
 
@@ -137,8 +135,8 @@ class Staff(Person):
                       (self.person.name, office_space[1]))
                 return True
         else:
-            new_staff = "INSERT INTO staff(name, room_id) VALUES ('%s', NULL)" % (
-                self.person.name)
+            new_staff = """INSERT INTO staff(name, room_id)
+            VALUES ('%s', NULL)""" % (self.person.name)
             staff_id = self.person.db.insert(new_staff)
 
             if staff_id:

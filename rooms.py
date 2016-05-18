@@ -190,6 +190,24 @@ class Rooms:
                     """SELECT * FROM staff
                     WHERE room_id = %d""" % (room[0]))
 
+    def vacancies(self, space_type):
+        if space_type == "living":
+            return self.rooms.db.select(
+                """SELECT rooms.id, rooms.name, rooms.type,
+                COUNT(*) AS occupants
+                FROM rooms
+                LEFT JOIN fellows ON rooms.id = fellows.room_id
+                WHERE rooms.type='L' GROUP BY rooms.id
+                HAVING occupants < %d """ % (LivingSpace.room_space))
+        elif space_type == "office":
+            return self.rooms.db.select(
+                """SELECT rooms.id, rooms.name, rooms.type,
+                COUNT(*) AS occupants
+                FROM rooms
+                LEFT JOIN staff ON rooms.id = staff.room_id
+                WHERE rooms.type='O' GROUP BY rooms.id
+                HAVING occupants < %d """ % (OfficeSpace.room_space))
+
 
 class OfficeSpace(Rooms):
     """Class OfficeSpace contains the characteristics and behaviors of the
@@ -200,17 +218,6 @@ class OfficeSpace(Rooms):
     def __init__(self):
         """Create instance of the database"""
         self.rooms = Rooms()
-
-    def office_spaces(self):
-        """Return a list of office spaces with a vacancy"""
-
-        office_space = self.rooms.db.select(
-            """SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants
-            FROM rooms
-            LEFT JOIN staff ON rooms.id = staff.room_id
-            WHERE rooms.type='O' GROUP BY rooms.id""")
-
-        return office_space
 
     def office_space(self, office_id):
         """
@@ -238,21 +245,9 @@ class LivingSpace(Rooms):
     """Class LivingSpace contains the characteristics and behaviors of the
     living spaces at Amity
     """
-    room_space = 4
-
     def __init__(self):
         """Create instance of the database"""
         self.rooms = Rooms()
-
-    def living_spaces(self):
-        """View a list of rooms with at least one vacancy"""
-
-        living_spaces = self.rooms.db.select(
-            """SELECT rooms.id, rooms.name, rooms.type, COUNT(*) AS occupants
-            FROM rooms
-            LEFT JOIN fellows ON rooms.id = fellows.room_id
-            WHERE rooms.type='L' GROUP BY rooms.id""")
-        return living_spaces
 
     def living_space(self, room_id):
         """
