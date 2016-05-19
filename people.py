@@ -256,7 +256,7 @@ class Fellow(Person):
                     """%s has opted out of amity accomodation. Would you like to accomodate the fellow?[y/n]""" % (fellow[1]))
 
                 if accommodate.upper() == 'Y':
-                    self.allocate_new_fellow(fellow, fellow_id, args)
+                    return self.allocate_fellow(fellow, fellow_id, args)
                 else:
                     print("%s has not been allocated into any room." %
                           format(fellow[1]))
@@ -286,22 +286,11 @@ class Fellow(Person):
         new_room_name = args['<new_room_name>']
 
         if old_room[1] != new_room_name:
-            living = LivingSpace()
-            new_room = living.space("L", new_room_name)
-            if new_room:
-                room_occupancy = living.occupancy("living", new_room[0])
-                if len(room_occupancy) < living.room_space:
-                    if living.allocate_room("fellow", fellow_id, new_room[0]):
-                        return "%s is now residing in %s" % (
-                            fellow[1], new_room_name)
-                else:
-                    return "%s is fully occupied." % (new_room_name)
-            else:
-                return "No living space by that name. Please try again"
+            return self.allocate_fellow(fellow, fellow_id, args)
         else:
             return "%s already belongs in %s" % (fellow[1], new_room_name)
 
-    def allocate_new_fellow(self, fellow, fellow_id, args):
+    def allocate_fellow(self, fellow, fellow_id, args):
         """Reallocate an existing fellow to a new room
 
          Arguments:
