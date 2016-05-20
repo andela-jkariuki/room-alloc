@@ -30,7 +30,8 @@ class Rooms:
              VALUES (?, ?)""", room_list):
             return 'New rooms succesfully created'
         else:
-            return 'Duplicate entries: A room already exist with provided name'
+            raise ValueError(
+                'Duplicate entries: A room already exist with provided name')
 
     def room_allocations(self, args):
         """Print out a list of all room allocations

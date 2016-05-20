@@ -37,26 +37,28 @@ class PeopleTest(unittest.TestCase):
 
         fellow = Fellow()
 
-        invalid_id = fellow.reallocate(
-            {'fellow': True, 'staff': False, '<person_identifier>': 10,
-             '<new_room_name>': 'camelot'})
+        with self.assertRaises(ValueError) as e:
+            fellow.reallocate(
+                {'fellow': True, 'staff': False, '<person_identifier>': 10,
+                 '<new_room_name>': 'camelot'})
 
-        self.assertEqual('No fellow by the provided fellow id 10', invalid_id)
+            self.assertEqual('No fellow by the provided fellow id 10', e)
 
-        invalid_allocation = fellow.reallocate(
-            {'fellow': True, 'staff': False, '<person_identifier>': 1,
-             '<new_room_name>': 'woodwing'})
-        self.assertEqual(
-            'John Kariuki already belongs in woodwing', invalid_allocation)
+        with self.assertRaises(ValueError) as e:
+            fellow.reallocate(
+                {'fellow': True, 'staff': False, '<person_identifier>': 1,
+                 '<new_room_name>': 'woodwing'})
+            self.assertEqual(
+                'John Kariuki already belongs in woodwing', e)
 
-        invalid_room = fellow.reallocate(
-            {'fellow': True, 'staff': False, '<person_identifier>': 1,
-             '<new_room_name>': 'randomnam3'})
-        self.assertEqual(
-            'No living space by that name. Please try again', invalid_room)
+        with self.assertRaises(ValueError) as e:
+            fellow.reallocate(
+                {'fellow': True, 'staff': False, '<person_identifier>': 1,
+                 '<new_room_name>': 'randomnam3'})
+            self.assertEqual(
+                'No living space by that name. Please try again', e)
 
         self.data.create_living_spaces(['midgar'])
-
         valid_allocation = fellow.reallocate(
             {'fellow': True, 'staff': False, '<person_identifier>': 1,
              '<new_room_name>': 'midgar'})
@@ -86,10 +88,11 @@ class PeopleTest(unittest.TestCase):
         self.data.create_fellow("Steph", "Curry", "y")
         self.data.create_fellow("Para", "More", "y")
 
-        unlucky_fellow = self.data.create_fellow("Amos", "Omondi", "y")
-        self.assertEqual(
-            'No vacant living spaces. Check later to accommodate Amos Omondi',
-            unlucky_fellow)
+        with self.assertRaises(ValueError) as e:
+            self.data.create_fellow("Amos", "Oti", "y")
+            self.assertEqual(
+                'No vacant living spaces. Check later to accommodate Amos Oti',
+                e)
 
         self.data.create_living_spaces(['bluewing'])
 
@@ -100,14 +103,13 @@ class PeopleTest(unittest.TestCase):
             {'fellow': True, 'staff': False, '<person_identifier>': 5,
              '<new_room_name>': 'bluewing'})
         self.assertEqual(
-            'Amos Omondi is now residing in bluewing', lucky_fellow)
+            'Amos Oti is now residing in bluewing', lucky_fellow)
 
-        unlucky_fellow = fellow.reallocate(
-            {'fellow': True, 'staff': False, '<person_identifier>': 6,
-             '<new_room_name>': 'woodwing'})
-        self.assertEqual(
-            'woodwing is fully occupied.',
-            unlucky_fellow)
+        with self.assertRaises(ValueError) as e:
+            fellow.reallocate(
+                {'fellow': True, 'staff': False, '<person_identifier>': 6,
+                 '<new_room_name>': 'woodwing'})
+            self.assertEqual('woodwing is fully occupied.', e)
 
     def test_allocate_new_fellow(self):
         """Test allocate new fellow method
@@ -117,10 +119,12 @@ class PeopleTest(unittest.TestCase):
         self.data.create_living_spaces(['bluewing'])
 
         fellow = Fellow()
-        wrong_space = fellow.allocate_fellow(
-            (2, 'John Kariuki', 'N', None), 2, {'<new_room_name>': 'random3'})
-        self.assertEqual(
-            'No living space by that name. Please try again', wrong_space)
+        with self.assertRaises(ValueError) as e:
+            fellow.allocate_fellow(
+                (2, 'John Kariuki', 'N', None), 2,
+                {'<new_room_name>': 'random3'})
+            self.assertEqual(
+                'No living space by that name. Please try again', e)
 
         allocate = fellow.allocate_fellow(
             (2, 'John Kariuki', 'N', None), 2, {'<new_room_name>': 'bluewing'})
@@ -130,11 +134,11 @@ class PeopleTest(unittest.TestCase):
         for i in range(7):
             self.data.create_fellow("John", "Kariuki", "y")
 
-        full_space = fellow.allocate_fellow(
-            (2, 'John Kariuki', 'N', None), 2, {'<new_room_name>': 'bluewing'})
-        self.assertEqual(
-            "bluewing is fully occupied.",
-            full_space)
+        with self.assertRaises(ValueError) as e:
+            fellow.allocate_fellow(
+                (2, 'John Kariuki', 'N', None), 2,
+                {'<new_room_name>': 'bluewing'})
+            self.assertEqual("bluewing is fully occupied.", e)
 
     def tearDown(self):
         """Delete the test database"""

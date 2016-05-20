@@ -37,10 +37,12 @@ class RoomTest(unittest.TestCase):
         Assert that an error is thrown on creating duplicate rooms
         """
         self.data.create_living_spaces(['woodwing'])
-        duplicate_room = self.data.create_living_spaces(['woodwing'])
-        self.assertEqual(
-            'Duplicate entries: A room already exist with provided name',
-            duplicate_room)
+
+        with self.assertRaises(ValueError) as e:
+            self.data.create_living_spaces(['woodwing'])
+            self.assertEqual(
+                'Duplicate entries: A room already exist with provided name',
+                e.exception)
 
     def test_room_allocations(self):
         """

@@ -70,7 +70,7 @@ class Person:
                         fellow['--a'] = person[3]
                         fellows.append(fellow)
                     except:
-                        print("Invalid data in file")
+                        raise ValueError("Invalid data in file")
 
                 else:
                     staff_member = {}
@@ -141,8 +141,9 @@ class Staff(Person):
                       (self.person.name, office_space[1]))
                 return True
 
-            return "There are no vacant office spaces. Please check in later to allocate %s" % (
-                    self.person.name)
+            raise ValueError(
+                "No vacant office spaces. Check in later to allocate %s" % (
+                    self.person.name))
 
     def reallocate(self, args):
         """Reallocate a staff member to a new office space
@@ -175,17 +176,22 @@ class Staff(Person):
                 if new_room:
                     room_occupancy = office.occupancy("office", new_room[0])
                     if len(room_occupancy) < office.room_space:
-                        if office.allocate_room("staff", staff_id, new_room[0]):
+                        if office.allocate_room("staff", staff_id,
+                                                new_room[0]):
                             return "%s is now residing in %s" % (
                                 staff[1], new_room_name)
                     else:
-                        return "%s is fully occupied." % (new_room_name)
+                        raise ValueError(
+                            "%s is fully occupied." % (new_room_name))
                 else:
-                    return "No office space by that name. Please try again"
+                    raise ValueError(
+                        "No office space by that name. Please try again")
             else:
-                return "%s already belongs in %s" % (staff[1], new_room_name)
+                raise ValueError(
+                    "%s already belongs in %s" % (staff[1], new_room_name))
         else:
-            return "No staff by the provided staff id %d" % staff_id
+            raise ValueError(
+                "No staff by the provided staff id %d" % staff_id)
 
 
 class Fellow(Person):
@@ -235,8 +241,9 @@ class Fellow(Person):
                     self.person.name, living_space[1]))
                 return True
         else:
-            return "No vacant living spaces. Check later to accommodate %s" % (
-                self.person.name)
+            raise ValueError(
+                "No vacant living spaces. Check later to accommodate %s" % (
+                    self.person.name))
 
     def reallocate(self, args):
         """Reallocate an existing fellow to a new room
@@ -263,7 +270,8 @@ class Fellow(Person):
             else:
                 return self.reallocate_fellow(fellow, fellow_id, args)
         else:
-            return "No fellow by the provided fellow id %d" % fellow_id
+            raise ValueError(
+                "No fellow by the provided fellow id %d" % fellow_id)
 
     def reallocate_fellow(self, fellow, fellow_id, args):
         """Reallocate an existing fellow to a new room
@@ -288,7 +296,8 @@ class Fellow(Person):
         if old_room[1] != new_room_name:
             return self.allocate_fellow(fellow, fellow_id, args)
         else:
-            return "%s already belongs in %s" % (fellow[1], new_room_name)
+            raise ValueError(
+                "%s already belongs in %s" % (fellow[1], new_room_name))
 
     def allocate_fellow(self, fellow, fellow_id, args):
         """Reallocate an existing fellow to a new room
@@ -311,6 +320,6 @@ class Fellow(Person):
                     return "%s is now residing in %s" % (
                         fellow[1], new_room_name)
             else:
-                return "%s is fully occupied." % (new_room_name)
+                raise ValueError("%s is fully occupied." % (new_room_name))
         else:
-            return "No living space by that name. Please try again"
+            raise ValueError("No living space by that name. Please try again")
