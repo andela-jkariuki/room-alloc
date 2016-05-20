@@ -67,7 +67,10 @@ class Amity (cmd.Cmd):
     @pass_opt
     def do_create_rooms(self, args):
         """Usage: create_rooms (living|office) <room_name>..."""
-        print(Rooms().create_rooms(args))
+        try:
+            print(Rooms().create_rooms(args))
+        except ValueError as e:
+            print(e)
 
     @pass_opt
     def do_add_person(self, args):
