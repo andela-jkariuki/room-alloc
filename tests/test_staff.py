@@ -1,5 +1,4 @@
 import unittest
-import os
 from people import Staff
 from data import Data
 
