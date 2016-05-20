@@ -75,12 +75,15 @@ class Amity (cmd.Cmd):
     @pass_opt
     def do_add_person(self, args):
         """Usage: add_person <first_name> <last_name> (fellow|staff) [--a=n]"""
-        if args['fellow']:
-            fellow = Fellow()
-            print(fellow.add_fellow(args))
-        else:
-            staff = Staff()
-            print(staff.add_staff(args))
+        try:
+            if args['fellow']:
+                fellow = Fellow()
+                print(fellow.add_fellow(args))
+            else:
+                staff = Staff()
+                print(staff.add_staff(args))
+        except ValueError as e:
+            print(e)
 
     @pass_opt
     def do_reallocate_person(self, args):

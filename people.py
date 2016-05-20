@@ -235,8 +235,9 @@ class Fellow(Person):
                     self.person.name, living_space[1]))
                 return True
         else:
-            return "No vacant living spaces. Check later to accommodate %s" % (
-                self.person.name)
+            raise ValueError(
+                "No vacant living spaces. Check later to accommodate %s" % (
+                    self.person.name))
 
     def reallocate(self, args):
         """Reallocate an existing fellow to a new room
@@ -263,7 +264,8 @@ class Fellow(Person):
             else:
                 return self.reallocate_fellow(fellow, fellow_id, args)
         else:
-            return "No fellow by the provided fellow id %d" % fellow_id
+            raise ValueError(
+                "No fellow by the provided fellow id %d" % fellow_id)
 
     def reallocate_fellow(self, fellow, fellow_id, args):
         """Reallocate an existing fellow to a new room
@@ -288,7 +290,8 @@ class Fellow(Person):
         if old_room[1] != new_room_name:
             return self.allocate_fellow(fellow, fellow_id, args)
         else:
-            return "%s already belongs in %s" % (fellow[1], new_room_name)
+            raise ValueError(
+                "%s already belongs in %s" % (fellow[1], new_room_name))
 
     def allocate_fellow(self, fellow, fellow_id, args):
         """Reallocate an existing fellow to a new room
@@ -311,6 +314,6 @@ class Fellow(Person):
                     return "%s is now residing in %s" % (
                         fellow[1], new_room_name)
             else:
-                return "%s is fully occupied." % (new_room_name)
+                raise ValueError("%s is fully occupied." % (new_room_name))
         else:
-            return "No living space by that name. Please try again"
+            raise ValueError("No living space by that name. Please try again")
