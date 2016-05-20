@@ -88,34 +88,49 @@ class Amity (cmd.Cmd):
     @pass_opt
     def do_reallocate_person(self, args):
         """Usage: reallocate_person (fellow|staff) <person_identifier> <new_room_name>"""
-        if args['fellow']:
-            print(Fellow().reallocate(args))
-        else:
-            print(Staff().reallocate(args))
+        try:
+            if args['fellow']:
+                print(Fellow().reallocate(args))
+            else:
+                print(Staff().reallocate(args))
+        except ValueError as e:
+            print(e)
 
     @pass_opt
     def do_print_allocations(self, args):
         """Usage: print_allocations [--o=allocations.txt]"""
         rooms = Rooms()
-        print(rooms.room_allocations(args))
+        try:
+            print(rooms.room_allocations(args))
+        except ValueError as e:
+            print(e)
 
     @pass_opt
     def do_print_room(self, args):
         """Usage: print_room <room_name> [--o=y]"""
-        rooms = Rooms()
-        print(rooms.room_allocation(args))
+        try:
+            rooms = Rooms()
+            print(rooms.room_allocation(args))
+        except ValueError as e:
+            print(e)
 
     @pass_opt
     def do_print_unallocated(self, args):
         """Usage: print_unallocated [--o=y]"""
-        person = Person()
-        person.unallocated(args)
+        try:
+            person = Person()
+            person.unallocated(args)
+        except ValueError as e:
+            print(e)
 
     @pass_opt
     def do_load_people(self, args):
         """Usage: load_people"""
-        people = Person()
-        people.allocate_from_file(args)
+        try:
+            people = Person()
+            people.allocate_from_file(args)
+        except ValueError as e:
+            print(e)
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""
