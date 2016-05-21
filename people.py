@@ -287,7 +287,8 @@ class Fellow(Person):
         if fellow[-1] is not None:
             old_room = self.person.db.select_one(
                 """SELECT * FROM rooms
-                WHERE id = %d AND type='L'""" % (fellow[-1]))
+                WHERE id = %d
+                AND type='L'""" % (fellow[-1]))
         else:
             old_room = [None, 'no prior office space']
 
