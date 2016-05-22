@@ -220,7 +220,7 @@ class Fellow(Person):
             print("%s succesfully added. Fellow ID is %d" %
                   (self.person.name, fellow_id))
             if self.accomodation == 'Y':
-                print('Searching for accomodation for the fellow...')
+                print('Searching for accomodation for the fellow...\n')
                 return self.accomodate_fellow(fellow_id)
             else:
                 return 'accomodation not provided for fellow.'
@@ -287,7 +287,8 @@ class Fellow(Person):
         if fellow[-1] is not None:
             old_room = self.person.db.select_one(
                 """SELECT * FROM rooms
-                WHERE id = %d AND type='L'""" % (fellow[-1]))
+                WHERE id = %d
+                AND type='L'""" % (fellow[-1]))
         else:
             old_room = [None, 'no prior office space']
 
