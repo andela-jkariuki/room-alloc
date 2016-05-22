@@ -220,7 +220,7 @@ class Fellow(Person):
             print("%s succesfully added. Fellow ID is %d" %
                   (self.person.name, fellow_id))
             if self.accomodation == 'Y':
-                print('Searching for accomodation for the fellow...')
+                print('Searching for accomodation for the fellow...\n')
                 return self.accomodate_fellow(fellow_id)
             else:
                 return 'accomodation not provided for fellow.'
