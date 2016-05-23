@@ -1,5 +1,4 @@
 import unittest
-import os
 from people import Fellow
 from data import Data
 
@@ -131,7 +130,7 @@ class PeopleTest(unittest.TestCase):
         self.assertEqual(
             "John Kariuki is now residing in bluewing", allocate)
 
-        for i in range(7):
+        for _ in range(7):
             self.data.create_fellow("John", "Kariuki", "y")
 
         with self.assertRaises(ValueError) as e:

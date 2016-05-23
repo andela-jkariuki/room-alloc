@@ -54,14 +54,14 @@ class Rooms:
         office_space_allocations = {}
         living_space_allocations = {}
 
-        for key, group in groupby(office_spaces, lambda x: x[0]):
+        for _, group in groupby(office_spaces, lambda x: x[0]):
             staff_occupancy = list(group)
             room_name = str(staff_occupancy[0][1])
             office_space_allocations[room_name] = []
             for staff in staff_occupancy:
                 office_space_allocations[room_name].append(staff[-1])
 
-        for key, group in groupby(living_spaces, lambda x: x[0]):
+        for _, group in groupby(living_spaces, lambda x: x[0]):
             staff_occupancy = list(group)
             room_name = str(staff_occupancy[0][1])
             living_space_allocations[room_name] = []
