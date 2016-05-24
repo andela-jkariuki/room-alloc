@@ -4,6 +4,7 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/andela-jkariuki/room-alloc/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/andela-jkariuki/room-alloc/?branch=develop)
 [![Coverage Status](https://coveralls.io/repos/github/andela-jkariuki/room-alloc/badge.svg?branch=develop)](https://coveralls.io/github/andela-jkariuki/room-alloc?branch=develop)
 [![Software License][ico-license]](https://github.com/andela-jkariuki/room-alloc)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5a2075ee0b1446e1b3c4153338285036)](https://www.codacy.com/app/john-kariuki/room-alloc?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=andela-jkariuki/room-alloc&amp;utm_campaign=Badge_Grade)
 
 ```
 room-alloc is Room allocation system for Amity, an Andela facility in Nigeria.
